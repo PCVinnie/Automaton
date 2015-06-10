@@ -8,5 +8,20 @@ namespace Automaton
 {
     class Transition
     {
+        State fromState;
+        State toState;
+        char symbol;
+
+        public Transition(State fromState, State toState, char symbol)
+        {
+            this.fromState = fromState;
+            this.toState = toState;
+            this.symbol = symbol;
+        }
+
+        public string print()
+        {
+            return "(" + fromState.getStateId() + "," + symbol + ") -->" + toState.getStateId();
+        }
     }
 }

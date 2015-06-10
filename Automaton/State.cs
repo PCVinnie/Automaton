@@ -8,5 +8,24 @@ namespace Automaton
 {
     class State
     {
+        char stateId;
+        int condition;
+
+        public State(char stateId, int condition)
+        {
+            this.stateId = stateId;
+            this.condition = condition;
+        }
+
+        public char getStateId()
+        {
+            return stateId;
+        }
+
+        public int getCondition()
+        {
+            return condition;
+        }
+
     }
 }
