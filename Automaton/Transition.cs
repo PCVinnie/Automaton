@@ -12,7 +12,7 @@ namespace Automaton
         State toState;
         char symbol;
 
-        public Transition(State fromState, State toState, char symbol)
+        public Transition(State fromState, char symbol, State toState)
         {
             this.fromState = fromState;
             this.toState = toState;
