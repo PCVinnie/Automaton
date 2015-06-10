@@ -9,7 +9,6 @@ namespace Automaton
     class Program
     {
         
-
         static void Main(string[] args)
         {
 
@@ -36,17 +35,20 @@ namespace Automaton
 
             while(true) {
                 Console.WriteLine("Kies uit 1 t/m 4.");
-                Console.WriteLine("1. Gebruik voorbeeld.");
-                Console.WriteLine("2. Handmatige invoer.");
+                Console.WriteLine("1. Gebruik NDFA voorbeeld.");
+                Console.WriteLine("2. Handmatige invoer NDFA.");
+                Console.WriteLine("3. Print NDFA.");
                 switch (Int32.Parse(Console.ReadLine()))
                 {
                     case 1:
                         /* NDFA voorbeeld */
                         automaton.addTransition(new Transition(new State('A',0), 'a', new State('B',1)));
-                        automaton.addTransition(new Transition(new State('B',1), 'a', new State('E',4)));
-                        automaton.addTransition(new Transition(new State('A',0), 'a', new State('C',2)));
+                        automaton.addTransition(new Transition(new State('B',1), 'b', new State('E',4)));
+                        automaton.addTransition(new Transition(new State('A',0), 'b', new State('C',2)));
                         automaton.addTransition(new Transition(new State('C',2), 'a', new State('D',3)));
-                        automaton.addTransition(new Transition(new State('D',3), 'a', new State('E',4)));
+                        automaton.addTransition(new Transition(new State('D',3), 'b', new State('E',4)));
+                        Console.WriteLine("NDFA voorbeeld toegevoegd.");
+                        Console.WriteLine(" ");
                         break;
                     case 2:
                         /* NDFA handmatige invoer */
@@ -66,15 +68,16 @@ namespace Automaton
                         }
                         break;
                     case 3:
-
+                        /* Print NDFA. */
+                        Console.WriteLine("NDFA:");
+                        automaton.printTransitions();
+                        Console.WriteLine(" ");
                         break;
                     case 4:
 
                         break;
                 }
-
             }
-
         }
     }
 }

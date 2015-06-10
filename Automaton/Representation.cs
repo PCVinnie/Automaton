@@ -8,5 +8,7 @@ namespace Automaton
 {
     class Representation
     {
+        //public void print();
+       
     }
 }

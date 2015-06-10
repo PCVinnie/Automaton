@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Automaton
 {
-    class DFA
+    class DFA : Representation
     {
     }
 }

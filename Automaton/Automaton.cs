@@ -24,6 +24,11 @@ namespace Automaton
             transitions.Add(t);
         }
 
+        List<Transition> getTransitions()
+        {
+            return transitions;
+        }
+
         public void printTransitions()
         {
             foreach (Transition obj in transitions) {
