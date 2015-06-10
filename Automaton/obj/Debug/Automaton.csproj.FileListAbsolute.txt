@@ -1,1 +1,6 @@
 c:\users\vincent\documents\visual studio 2013\Projects\Automaton\Automaton\bin\Debug\Automaton.exe.config
+C:\Users\Vincent\Documents\Visual Studio 2013\Projects\Automaton\Automaton\bin\Debug\Automaton.exe
+C:\Users\Vincent\Documents\Visual Studio 2013\Projects\Automaton\Automaton\bin\Debug\Automaton.pdb
+C:\Users\Vincent\Documents\Visual Studio 2013\Projects\Automaton\Automaton\obj\Debug\Automaton.csprojResolveAssemblyReference.cache
+C:\Users\Vincent\Documents\Visual Studio 2013\Projects\Automaton\Automaton\obj\Debug\Automaton.exe
+C:\Users\Vincent\Documents\Visual Studio 2013\Projects\Automaton\Automaton\obj\Debug\Automaton.pdb
