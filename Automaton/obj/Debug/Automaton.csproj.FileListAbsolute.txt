@@ -1,0 +1,1 @@
+c:\users\vincent\documents\visual studio 2013\Projects\Automaton\Automaton\bin\Debug\Automaton.exe.config
