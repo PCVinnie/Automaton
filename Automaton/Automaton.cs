@@ -32,7 +32,6 @@ namespace Automaton
         public void check()
         {
             twoArray[0,0] = beginState;
-            int row = 0;
             int count = 0;
             int newRow = 0;
             char[] list = new char[10];
@@ -49,7 +48,10 @@ namespace Automaton
                         if (symbol == 'a')
                         {
 
-                            twoArray[row, 1] = transition.getToState();         
+                            // Voegt een toestand aan de lijst toe bijvoorbeeld: A -> B
+                            for (int i = 0; i < twoArray.GetLength(0); i++)
+                                if (twoArray[i, 0] == transition.getFromState())
+                                    twoArray[i, 1] = transition.getToState();          
 
                             //---------------------------------------------------------------------//
                             for (int i = 0; i < twoArray.GetLength(0); i++) 
@@ -72,17 +74,18 @@ namespace Automaton
                         {
 
                             // Voegt een toestand aan de lijst toe bijvoorbeeld: A -> B
-                            twoArray[row, 2] = transition.getToState();                
+                            for (int i = 0; i < twoArray.GetLength(0); i++)
+                                if (twoArray[i, 0] == transition.getFromState())
+                                    twoArray[i, 2] = transition.getToState();                
 
                             // Controleert of er geen dubbele toestanden zijn op column 0, zo niet dan voegt die een toestand toe.
                             for (int i = 0; i < twoArray.GetLength(0); i++)
                                 if (twoArray[i, 0] == transition.getToState())
                                     count++;
 
-                            if (count < 1) {
+                            if (count < 1)
                                 newRow++;                                      
                                 twoArray[newRow, 0] = transition.getToState();
-                            }
                             count = 0;
 
                             // Kijkt naar het omgekeerde van A <- B en voegt hiervoor een toestand toe aan de lijst.
@@ -92,7 +95,6 @@ namespace Automaton
                                         if (twoArray[i, 0] == transition.getToState())
                                             twoArray[i, 2] = transition.getFromState();
 
-                            row++;
                         }
                     }
                 }
