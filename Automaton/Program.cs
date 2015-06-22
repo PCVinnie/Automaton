@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 namespace Automaton
 {
     class Program
-    {
-        
+    {   
         static void Main(string[] args)
         {
             char[] symbols = { 'a', 'b' };
@@ -28,46 +27,57 @@ namespace Automaton
                 Console.WriteLine("1. Gebruik NDFA voorbeeld.");
                 Console.WriteLine("2. Handmatige invoer NDFA.");
                 Console.WriteLine("3. Print NDFA.");
-                switch (Int32.Parse(Console.ReadLine()))
-                {
-                    case 1:
-                        /* NDFA voorbeeld */
-                        automaton.addTransition(new Transition('A', 'a', 'B'));
-                        automaton.addTransition(new Transition('A', 'b', 'C'));
-                        automaton.addTransition(new Transition('B', 'b', 'E'));
-                        automaton.addTransition(new Transition('C', 'a', 'D'));
-                        automaton.addTransition(new Transition('D', 'b', 'F'));
-                        automaton.addTransition(new Transition('E', 'a', 'F'));
-                        automaton.check();
-                        Console.WriteLine("NDFA voorbeeld toegevoegd.");
-                        Console.WriteLine(" ");
-                        break;
-                    case 2:
-                        /* NDFA handmatige invoer */
-                        Console.WriteLine("Hoeveel toestanden moeten er aangemaakt worden?");
-                        Console.WriteLine("Er moet minimaal 2 toestanden aangemaakt worden!");
-                        int numberOfStates = Int32.Parse(Console.ReadLine());     
-                        if(numberOfStates > 2) {
-                            for(int i = 0; i < numberOfStates; i++) {
-                                Console.WriteLine("Van toestand: ");
-                                string beginStateInput = Console.ReadLine();
-                                Console.WriteLine("Symbool: ");
-                                string inputSymbol = Console.ReadLine();
-                                Console.WriteLine("Eind toestand: ");
-                                string endStateInput = Console.ReadLine();
-                                //automaton.addTransition(new Transition(new State(beginState), inputSymbol, new State(endState));
+                
+                string userInput = Console.ReadLine();
+                int value;
+                if (int.TryParse(userInput, out value)) {
+  
+                    switch (value) {
+                        case 1:
+                            /* NDFA voorbeeld */
+                            automaton.addTransition(new Transition('A', 'a', 'B'));
+                            automaton.addTransition(new Transition('A', 'b', 'C'));
+                            automaton.addTransition(new Transition('B', 'b', 'E'));
+                            automaton.addTransition(new Transition('C', 'a', 'D'));
+                            automaton.addTransition(new Transition('D', 'b', 'F'));
+                            automaton.addTransition(new Transition('E', 'a', 'F'));
+                            automaton.check();
+                            Console.WriteLine("NDFA voorbeeld toegevoegd.");
+                            Console.WriteLine(" ");
+                            break;
+                        case 2:
+                            /* NDFA handmatige invoer */
+                            Console.WriteLine("Hoeveel toestanden moeten er aangemaakt worden?");
+                            Console.WriteLine("Er moet minimaal 2 toestanden aangemaakt worden!");
+                            int numberOfStates = Int32.Parse(Console.ReadLine());     
+                            if(numberOfStates > 2) {
+                                for(int i = 0; i < numberOfStates; i++) {
+                                    Console.WriteLine("Van toestand: ");
+                                    string beginStateInput = Console.ReadLine();
+                                    Console.WriteLine("Symbool: ");
+                                    string inputSymbol = Console.ReadLine();
+                                    Console.WriteLine("Eind toestand: ");
+                                    string endStateInput = Console.ReadLine();
+                                    //automaton.addTransition(new Transition(new State(beginState), inputSymbol, new State(endState));
+                                }
                             }
-                        }
-                        break;
-                    case 3:
-                        /* Print NDFA. */
-                        Console.WriteLine("NDFA:");
-                        automaton.printTransitions();
-                        Console.WriteLine(" ");
-                        break;
-                    case 4:
+                            break;
+                        case 3:
+                            /* Print NDFA. */
+                            Console.WriteLine("NDFA:");
+                            automaton.printTransitions();
+                            Console.WriteLine(" ");
+                            break;
+                        case 4:
 
-                        break;
+                            break;
+                        default:
+                            Console.WriteLine("Kies een getal van 1 t/m 4.");
+                            break;     
+
+                    }
+                } else {
+                    Console.WriteLine("Verkeerde invoer!");
                 }
             }
         }
