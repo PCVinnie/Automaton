@@ -11,21 +11,11 @@ namespace Automaton
         
         static void Main(string[] args)
         {
+            char[] symbols = { 'a', 'b' };
+            char beginState = 'A';
+            char endState = 'F';
 
-            State stateA = new State('A', 0); //Start
-            State stateB = new State('B', 1); 
-            State stateC = new State('C', 2); //End
-
-            List<State> myStates = new List<State>();
-            myStates.Add(stateA);
-            myStates.Add(stateB);
-            myStates.Add(stateC);
-
-            List<char> mySymbols = new List<char>();
-            mySymbols.Add('a');
-            mySymbols.Add('b');
-
-            Automaton automaton = new Automaton(myStates,mySymbols);
+            Automaton automaton = new Automaton(symbols, beginState, endState);
 
             /*------------------Terminal------------------*/
 
@@ -42,11 +32,13 @@ namespace Automaton
                 {
                     case 1:
                         /* NDFA voorbeeld */
-                        automaton.addTransition(new Transition(new State('A',0), 'a', new State('B',1)));
-                        automaton.addTransition(new Transition(new State('B',1), 'b', new State('E',4)));
-                        automaton.addTransition(new Transition(new State('A',0), 'b', new State('C',2)));
-                        automaton.addTransition(new Transition(new State('C',2), 'a', new State('D',3)));
-                        automaton.addTransition(new Transition(new State('D',3), 'b', new State('E',4)));
+                        automaton.addTransition(new Transition('A', 'a', 'B'));
+                        automaton.addTransition(new Transition('A', 'b', 'C'));
+                        automaton.addTransition(new Transition('B', 'b', 'E'));
+                        automaton.addTransition(new Transition('C', 'a', 'D'));
+                        automaton.addTransition(new Transition('D', 'b', 'F'));
+                        automaton.addTransition(new Transition('E', 'a', 'F'));
+                        automaton.check();
                         Console.WriteLine("NDFA voorbeeld toegevoegd.");
                         Console.WriteLine(" ");
                         break;
@@ -58,11 +50,11 @@ namespace Automaton
                         if(numberOfStates > 2) {
                             for(int i = 0; i < numberOfStates; i++) {
                                 Console.WriteLine("Van toestand: ");
-                                string beginState = Console.ReadLine();
+                                string beginStateInput = Console.ReadLine();
                                 Console.WriteLine("Symbool: ");
                                 string inputSymbol = Console.ReadLine();
                                 Console.WriteLine("Eind toestand: ");
-                                string endState = Console.ReadLine();
+                                string endStateInput = Console.ReadLine();
                                 //automaton.addTransition(new Transition(new State(beginState), inputSymbol, new State(endState));
                             }
                         }
