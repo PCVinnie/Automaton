@@ -51,9 +51,9 @@ namespace Automaton
                             // Voegt een toestand aan de lijst toe bijvoorbeeld: A -> B
                             for (int i = 0; i < twoArray.GetLength(0); i++)
                                 if (twoArray[i, 0] == transition.getFromState())
-                                    twoArray[i, 1] = transition.getToState();          
+                                    twoArray[i, 1] = transition.getToState();
 
-                            //---------------------------------------------------------------------//
+                            // Controleert of er geen dubbele toestanden zijn op column 0, zo niet dan voegt die een toestand toe.
                             for (int i = 0; i < twoArray.GetLength(0); i++) 
                                 if (twoArray[i, 0] == transition.getToState())
                                     count++;
@@ -62,7 +62,7 @@ namespace Automaton
                                  newRow++; twoArray[newRow, 0] = transition.getToState();
                             count = 0;
 
-
+                            // Kijkt naar het omgekeerde van A <- B en voegt hiervoor een toestand toe aan de lijst.
                             foreach (Transition transition2 in transitions)   
                                 if (transition2.getFromState() == transition.getToState() && transition2.getSymbol() == transition.getSymbol())
                                     for (int i = 0; i < twoArray.GetLength(0); i++)
