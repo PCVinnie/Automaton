@@ -11,8 +11,8 @@ namespace Automaton
         static void Main(string[] args)
         {
             char[] symbols = { 'a', 'b' };
-            char beginState = 'A';
-            char endState = 'F';
+            string beginState = "A";
+            string endState = "F";
 
             Automaton automaton = new Automaton(symbols, beginState, endState);
 
@@ -23,10 +23,11 @@ namespace Automaton
             Console.WriteLine("-------------------------------");
 
             while(true) {
-                Console.WriteLine("Kies uit 1 t/m 4.");
-                Console.WriteLine("1. Gebruik NDFA voorbeeld.");
-                Console.WriteLine("2. Handmatige invoer NDFA.");
-                Console.WriteLine("3. Print NDFA.");
+                Console.WriteLine("Kies uit 1 t/m 4:");
+                Console.WriteLine("1. Gebruik NDFA->DFA voorbeeld");
+                Console.WriteLine("2. Handmatige invoer NDFA->DFA");
+                Console.WriteLine("3. ");
+                Console.WriteLine("4. Sluiten");
                 Console.WriteLine("4. Handmatige invoer Reguliere Expressie");
                 
                 string userInput = Console.ReadLine();
@@ -36,14 +37,26 @@ namespace Automaton
                     switch (value) {
                         case 1:
                             /* NDFA voorbeeld */
-                            automaton.addTransition(new Transition('A', 'a', 'B'));
-                            automaton.addTransition(new Transition('A', 'b', 'C'));
-                            automaton.addTransition(new Transition('B', 'b', 'E'));
-                            automaton.addTransition(new Transition('C', 'a', 'D'));
-                            automaton.addTransition(new Transition('D', 'b', 'F'));
-                            automaton.addTransition(new Transition('E', 'a', 'F'));
-                            automaton.check();
-                            Console.WriteLine("NDFA voorbeeld toegevoegd.");
+                            automaton.addTransition(new Transition("A", 'a', "B"));
+                            automaton.addTransition(new Transition("A", 'b', "C"));
+                            automaton.addTransition(new Transition("A", 'b', "G"));
+                            automaton.addTransition(new Transition("A", 'b', "X"));
+                            automaton.addTransition(new Transition("A", 'b', "Z"));
+                            automaton.addTransition(new Transition("B", 'b', "E"));
+                            automaton.addTransition(new Transition("C", 'a', "D"));
+                            automaton.addTransition(new Transition("D", 'b', "F"));
+                            automaton.addTransition(new Transition("E", 'a', "F"));
+
+                           // automaton.check();
+
+                            /* Print NDFA. */
+                            Console.WriteLine("NDFA:");
+                            automaton.printTransitions();
+                            Console.WriteLine(" ");
+
+                            /* Print NDFA -> DFA */                         
+                            Console.WriteLine("NDFA->DFA");
+                            automaton.ndfaToDFA();
                             Console.WriteLine(" ");
                             break;
                         case 2:
@@ -64,10 +77,6 @@ namespace Automaton
                             }
                             break;
                         case 3:
-                            /* Print NDFA. */
-                            Console.WriteLine("NDFA:");
-                            automaton.printTransitions();
-                            Console.WriteLine(" ");
                             break;
                         case 4:
                             Console.WriteLine("Voer een Reguliere Expressie in. Symbolen: ( ) a b | *");
