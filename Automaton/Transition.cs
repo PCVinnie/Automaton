@@ -8,24 +8,24 @@ namespace Automaton
 {
     class Transition
     {
-        char fromState;
-        char toState;
+        string fromState;
+        string toState;
         char symbol;
         public static char EPSILON = '$';
 
-        public Transition(char fromState, char symbol, char toState)
+        public Transition(string fromState, char symbol, string toState)
         {
             this.fromState = fromState;
             this.toState = toState;
             this.symbol = symbol;
         }
 
-        public char getFromState()
+        public string getFromState()
         {
             return fromState;
         }
 
-        public char getToState()
+        public string getToState()
         {
             return toState;
         }
