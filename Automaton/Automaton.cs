@@ -35,7 +35,6 @@ namespace Automaton
             int count = 0;
             int newState = 0;
             int newRow = 0;
-            char[] list = new char[10];
 
             foreach (Transition transition in transitions)
             {
@@ -76,28 +75,59 @@ namespace Automaton
                     }
                 }
 
-            // Print de symbolen.
+            // Print de symbolen en de twee dimensionale array in terminal.
             string symbolStr = "";
             string line = "";
-            for (int i = 0; i < symbols.Length; i++) {
-                line += "    " + symbols[i];
-                symbolStr += "------";
-            }
-            Console.WriteLine(line);
-            Console.WriteLine(symbolStr);
+            bool asPrint = true;
 
-            // Print de twee dimensionale array in terminal.
-            int rowLength = twoArray.GetLength(0);
             string table = "";
-            for (int i = 0; i < rowLength; i++) {
-                for (int j = 0; j < symbols.Length; j++)
-                {
-                    table += " | " + twoArray[i, j+1];
+            string space = "";
+            int strLength = 0;
+            int spcLength = 0;
+            int maxStrLength = 0;
+
+            for (int i = 0; i < twoArray.GetLength(0); i++) {                
+                for (int j = 0; j < symbols.Length; j++) {
+
+                    if (twoArray[i, j] != null)
+                        strLength = twoArray[i, j].Length;
+
+                    for (int l = 0; l < twoArray.GetLength(0); l++) {
+                        for (int m = 0; m < symbols.Length; m++) {
+                            if (twoArray[l, m] != null) {
+                                if (twoArray[l, m].Length > maxStrLength) {
+                                    maxStrLength = twoArray[l, m].Length;
+                                }
+                            }
+                        }
+                    }
+
+                    spcLength = maxStrLength - strLength;
+
+                    for (int k = 0; k < spcLength; k++) {
+                        space += " ";
+                    }
+
+                    line += space + " | " + symbols[j];
+                    symbolStr += "---------";
+                    table += space + " | " + twoArray[i, j + 1];
+                    space = "";
                 }
-                Console.WriteLine(twoArray[i, 0] + table);
+
+                if (asPrint == true) {
+                    Console.WriteLine(" " + line);
+                    Console.WriteLine(symbolStr);
+                    line = "";
+                    symbolStr = "";
+                    asPrint = false;
+                }
+
+                if (twoArray[i, 0] == null)
+                    Console.WriteLine(" " + twoArray[i, 0] + table);
+                else
+                    Console.WriteLine(twoArray[i, 0] + table);
                 table = "";
             }
-
         }
 
         List<Transition> getTransitions()
