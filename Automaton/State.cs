@@ -8,6 +8,7 @@ namespace Automaton
 {
     class State
     {
+        public enum Type { START, NORMAL, END };
         char stateId;
         int condition;
 
@@ -26,6 +27,5 @@ namespace Automaton
         {
             return condition;
         }
-
     }
 }
