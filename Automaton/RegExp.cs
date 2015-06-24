@@ -122,8 +122,20 @@ namespace Automaton
        
         public void printRegExp()
         {
-
             Console.WriteLine("");
+        }
+
+        public void ToNDFA(string input)
+        {
+
+        }
+
+        public static bool CheckRegExpInput(string input)
+        {
+            char[] regExpChars = "()ab|*".ToCharArray();
+            foreach (char c in input.Where(c => !regExpChars.Contains(c)))
+                return false;
+            return true;
         }
     }
 }
