@@ -28,6 +28,7 @@ namespace Automaton
                 Console.WriteLine("2. Handmatige invoer NDFA->DFA");
                 Console.WriteLine("3. ");
                 Console.WriteLine("4. Sluiten");
+                Console.WriteLine("4. Handmatige invoer Reguliere Expressie");
                 
                 string userInput = Console.ReadLine();
                 int value;
@@ -78,12 +79,17 @@ namespace Automaton
                         case 3:
                             break;
                         case 4:
-                            Environment.Exit(0);
+                            Console.WriteLine("Voer een Reguliere Expressie in. Symbolen: ( ) a b | *");
+                            string input = Console.ReadLine();
+                            if (RegExp.CheckRegExpInput(input))
+                            {
+                                
+                            }
+                            Console.WriteLine("Input error!");
                             break;
                         default:
                             Console.WriteLine("Kies een getal van 1 t/m 4.");
                             break;     
-
                     }
                 } else {
                     Console.WriteLine("Verkeerde invoer!");
