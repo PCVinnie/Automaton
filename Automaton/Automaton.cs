@@ -10,7 +10,7 @@ namespace Automaton
     {
         List<Transition> transitions = new List<Transition>();
         List<List<char>> matrix = new List<List<char>>();
-        string[,] twoArray = new string[9, 3];
+        string[,] twoArray = new string[9, 4];
 
         char[] symbols;
         string beginState;
@@ -45,35 +45,39 @@ namespace Automaton
                     if (symbols[symbolNr] == transition.getSymbol())
                     {
 
-                            // Voegt een toestand aan de lijst toe bijvoorbeeld: A -> B
-                            for (int row = 0; row < twoArray.GetLength(0); row++)
-                                if (twoArray[row, 0] == transition.getFromState())
-                                {
-                                    twoArray[row, symbolNr+1] += transition.getToState();
-                                    newState = row;
-                                }
-
-                            // Controleert of er geen dubbele toestanden zijn op column 0, zo niet dan voegt die een toestand toe.
-                            for (int i = 0; i < twoArray.GetLength(0); i++)
-                                if (twoArray[i, 0] == twoArray[newState, symbolNr+1])
-                                    count++;
-
-                            if (count < 1)
-                            {
-                                newRow++;
-                                twoArray[newRow, 0] = twoArray[newState, symbolNr+1];
+                        // Voegt een toestand aan de lijst toe bijvoorbeeld: A -> B
+                        for (int row = 0; row < twoArray.GetLength(0); row++)
+                            if (twoArray[row, 0] == transition.getFromState()) {
+                                twoArray[row, symbolNr + 1] += transition.getToState();
+                                newState = row;
                             }
-                            count = 0;
 
-                            // Kijkt naar het omgekeerde van A <- B en voegt hiervoor een toestand toe aan de lijst.
-                            foreach (Transition transition2 in transitions)
-                                if (transition2.getFromState() == transition.getToState() && transition2.getSymbol() == transition.getSymbol())
-                                    for (int i = 0; i < twoArray.GetLength(0); i++)
-                                        if (twoArray[i, 0] == transition.getToState())
-                                            twoArray[i, symbolNr+1] += transition.getFromState();
+                        // Controleert of er geen dubbele toestanden zijn op column 0, zo niet dan voegt die een toestand toe.
+                        for (int i = 0; i < twoArray.GetLength(0); i++)
+                            if (twoArray[i, 0] == twoArray[newState, symbolNr + 1])
+                                count++;
+
+                        if (count < 1) {
+                            newRow++;
+                            twoArray[newRow, 0] = twoArray[newState, symbolNr + 1];
                         }
+                        count = 0;
+
+                        // Kijkt naar het omgekeerde van A <- B en voegt hiervoor een toestand toe aan de lijst.
+                        foreach (Transition transition2 in transitions)
+                            if (transition2.getFromState() == transition.getToState() && transition2.getSymbol() == transition.getSymbol())
+                                for (int i = 0; i < twoArray.GetLength(0); i++)
+                                    if (twoArray[i, 0] == transition.getToState())
+                                        twoArray[i, symbolNr + 1] += transition.getFromState();
                     }
                 }
+            }
+
+            // Vult de lege plaatsen op met een lege string. (Lege verzameling)
+            for (int i = 0; i < twoArray.GetLength(0); i++)
+                for (int j = 0; j < 3; j++)
+                    if (twoArray[i, j] == null)
+                        twoArray[i, j] = " ";
 
             // Print de symbolen en de twee dimensionale array in terminal.
             string symbolStr = "";
@@ -87,30 +91,26 @@ namespace Automaton
             int maxStrLength = 0;
 
             for (int i = 0; i < twoArray.GetLength(0); i++) {                
-                for (int j = 0; j < symbols.Length; j++) {
+                for (int j = 0; j < 2; j++) {
 
-                    if (twoArray[i, j] != null)
-                        strLength = twoArray[i, j].Length;
+                    strLength = twoArray[i, j].Length;
 
-                    for (int l = 0; l < twoArray.GetLength(0); l++) {
-                        for (int m = 0; m < symbols.Length; m++) {
-                            if (twoArray[l, m] != null) {
-                                if (twoArray[l, m].Length > maxStrLength) {
-                                    maxStrLength = twoArray[l, m].Length;
-                                }
-                            }
-                        }
-                    }
+                    for (int l = 0; l < 9; l++)
+                        for (int m = 0; m < 3; m++)
+                            if (twoArray[l, m].Length > maxStrLength)
+                                maxStrLength = twoArray[l, m].Length;
 
                     spcLength = maxStrLength - strLength;
 
-                    for (int k = 0; k < spcLength; k++) {
+                    for (int k = 0; k < spcLength; k++)
                         space += " ";
-                    }
 
                     line += space + " | " + symbols[j];
                     symbolStr += "---------";
-                    table += space + " | " + twoArray[i, j + 1];
+                    if (twoArray[i, j + 1] == null)
+                        table += space + " |  " + twoArray[i, j + 1];
+                    else
+                        table += space + " | " + twoArray[i, j + 1];
                     space = "";
                 }
 
@@ -121,10 +121,6 @@ namespace Automaton
                     symbolStr = "";
                     asPrint = false;
                 }
-
-                if (twoArray[i, 0] == null)
-                    Console.WriteLine(" " + twoArray[i, 0] + table);
-                else
                     Console.WriteLine(twoArray[i, 0] + table);
                 table = "";
             }
