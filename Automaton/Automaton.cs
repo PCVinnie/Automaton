@@ -9,8 +9,7 @@ namespace Automaton
     class Automaton
     {
         List<Transition> transitions = new List<Transition>();
-        List<List<char>> matrix = new List<List<char>>();
-        string[,] twoArray = new string[9, 4];
+        string[,] matrix = new string[9, 6];
 
         char[] symbols;
         string beginState;
@@ -31,97 +30,122 @@ namespace Automaton
 
         public void ndfaToDFA()
         {
-            twoArray[0, 0] = beginState;
+            matrix[0, 0] = beginState;
             int count = 0;
             int newState = 0;
             int newRow = 0;
+            int oldState = 0;
+            int oldSymbolNr = 0;
 
-            foreach (Transition transition in transitions)
-            {
+            foreach (Transition transition in transitions) {
+                for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++) {
 
-                for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
-                {
-
-                    if (symbols[symbolNr] == transition.getSymbol())
-                    {
+                    if (symbols[symbolNr] == transition.getSymbol()) {
 
                         // Voegt een toestand aan de lijst toe bijvoorbeeld: A -> B
-                        for (int row = 0; row < twoArray.GetLength(0); row++)
-                            if (twoArray[row, 0] == transition.getFromState()) {
-                                twoArray[row, symbolNr + 1] += transition.getToState();
+                        for (int row = 0; row < matrix.GetLength(0); row++)
+                        {
+                            if (matrix[row, 0] == transition.getFromState())
+                            {
+                                matrix[row, symbolNr + 1] += transition.getToState();
                                 newState = row;
                             }
+                        }
 
                         // Controleert of er geen dubbele toestanden zijn op column 0, zo niet dan voegt die een toestand toe.
-                        for (int i = 0; i < twoArray.GetLength(0); i++)
-                            if (twoArray[i, 0] == twoArray[newState, symbolNr + 1])
+                        for (int i = 0; i < matrix.GetLength(0); i++)
+                        {
+                            if (matrix[i, 0] == matrix[newState, symbolNr + 1])
+                            {
                                 count++;
-
-                        if (count < 1) {
-                            newRow++;
-                            twoArray[newRow, 0] = twoArray[newState, symbolNr + 1];
+                            }
                         }
-                        count = 0;
+
+                            if (count < 1) {
+                                newRow++;
+                                matrix[newRow, 0] = matrix[newState, symbolNr + 1];
+                            }
+                            count = 0;
 
                         // Kijkt naar het omgekeerde van A <- B en voegt hiervoor een toestand toe aan de lijst.
                         foreach (Transition transition2 in transitions)
                             if (transition2.getFromState() == transition.getToState() && transition2.getSymbol() == transition.getSymbol())
-                                for (int i = 0; i < twoArray.GetLength(0); i++)
-                                    if (twoArray[i, 0] == transition.getToState())
-                                        twoArray[i, symbolNr + 1] += transition.getFromState();
+                                for (int i = 0; i < matrix.GetLength(0); i++)
+                                    if (matrix[i, 0] == transition.getToState())
+                                        matrix[i, symbolNr + 1] += transition.getFromState();
                     }
                 }
             }
 
             // Vult de lege plaatsen op met een lege string. (Lege verzameling)
-            for (int i = 0; i < twoArray.GetLength(0); i++)
-                for (int j = 0; j < 3; j++)
-                    if (twoArray[i, j] == null)
-                        twoArray[i, j] = " ";
+            for (int i = 0; i < matrix.GetLength(0); i++)
+                for (int j = 0; j < symbols.Length; j++)
+                    if (matrix[i, j] == null)
+                        matrix[i, j] = " ";
 
-            // Print de symbolen en de twee dimensionale array in terminal.
-            string symbolStr = "";
-            string line = "";
-            bool asPrint = true;
+            epsilonClosure();
 
+            printDFATable();
+        }
+
+        public void epsilonClosure()
+        {
+            
+        }
+
+        public void printDFATable()
+        {
+
+            string symbol = "";
             string table = "";
             string space = "";
+            bool asPrint = true;
+            int totLength = 0;
             int strLength = 0;
-            int spcLength = 0;
-            int maxStrLength = 0;
 
-            for (int i = 0; i < twoArray.GetLength(0); i++) {                
-                for (int j = 0; j < 2; j++) {
+            for (int i = 0; i < matrix.GetLength(0); i++) {
+                
+                for (int j = 0; j < symbols.Length; j++) {
 
-                    strLength = twoArray[i, j].Length;
+                    for (int l = 0; l < matrix.GetLength(0); l++)
+                        if (matrix[l, 0].Length > strLength)
+                            strLength = matrix[l, 0].Length;
 
-                    for (int l = 0; l < 9; l++)
-                        for (int m = 0; m < 3; m++)
-                            if (twoArray[l, m].Length > maxStrLength)
-                                maxStrLength = twoArray[l, m].Length;
+                    totLength = strLength - matrix[i, j].Length;
 
-                    spcLength = maxStrLength - strLength;
-
-                    for (int k = 0; k < spcLength; k++)
+                    for (int m = 0; m < totLength; m++)
                         space += " ";
 
-                    line += space + " | " + symbols[j];
-                    symbolStr += "---------";
-                    if (twoArray[i, j + 1] == null)
-                        table += space + " |  " + twoArray[i, j + 1];
+                    // Table
+                    if (matrix[i, j + 1] == null)
+                        table += space + " |  " + matrix[i, j + 1];
                     else
-                        table += space + " | " + twoArray[i, j + 1];
+                        table += space + " | " + matrix[i, j + 1];
                     space = "";
+                
                 }
 
                 if (asPrint == true) {
-                    Console.WriteLine(" " + line);
-                    Console.WriteLine(symbolStr);
-                    line = "";
-                    symbolStr = "";
+
+                    totLength = strLength - 1;
+
+                    for (int k = 0; k < totLength; k++)
+                        space += " ";
+
+                    // Symbols
+                    for (int l = 0; l < symbols.Length; l++)
+                        symbol += space + " | " + symbols[l];
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine(" " + symbol);
+                    Console.ResetColor();
+
+                    symbol = "";
+                    space = "";
                     asPrint = false;
+
                 }
-                    Console.WriteLine(twoArray[i, 0] + table);
+                Console.WriteLine(matrix[i, 0] + table);
                 table = "";
             }
         }
