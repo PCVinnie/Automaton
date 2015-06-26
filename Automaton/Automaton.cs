@@ -9,13 +9,13 @@ namespace Automaton
     class Automaton
     {
         List<Transition> transitions = new List<Transition>();
-        string[,] matrix = new string[9, 6];
+        string[,] matrix = new string[19, 6];
 
         char[] symbols;
-        string beginState;
+        string[] beginState;
         string endState;
 
-        public Automaton(char[] symbols, string beginState, string endState)
+        public Automaton(char[] symbols, string[] beginState, string endState)
         {
             this.symbols = symbols;
             this.beginState = beginState;
@@ -30,58 +30,102 @@ namespace Automaton
 
         public void ndfaToDFA()
         {
-            matrix[0, 0] = beginState;
             int count = 0;
             int newState = 0;
-            int newRow = 0;
-            int oldState = 0;
-            int oldSymbolNr = 0;
 
-            foreach (Transition transition in transitions) {
-                for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++) {
+            foreach (Transition transition in transitions)
+            {
+                for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
+                {
 
-                    if (symbols[symbolNr] == transition.getSymbol()) {
-
-                        // Voegt een toestand aan de lijst toe bijvoorbeeld: A -> B
+                    if (symbols[symbolNr] == transition.getSymbol())
+                    {
+                        // Voegt de begintoestanden aan de dimensie 0.
+                        for (int i = 0; i < beginState.Length; i++)
+                        {
+                            if (beginState[i] == transition.getFromState())
+                            {
+                                matrix[i, 0] = beginState[i];                          
+                            }
+                        }
+                        // Controleert de begintoestanden en voegt de eindtoestanden toe aan de dimensies a, b enz.
                         for (int row = 0; row < matrix.GetLength(0); row++)
                         {
-                            if (matrix[row, 0] == transition.getFromState())
-                            {
+                            if (matrix[row, 0] == transition.getFromState()) {
                                 matrix[row, symbolNr + 1] += transition.getToState();
                                 newState = row;
                             }
                         }
-
-                        // Controleert of er geen dubbele toestanden zijn op column 0, zo niet dan voegt die een toestand toe.
-                        for (int i = 0; i < matrix.GetLength(0); i++)
-                        {
-                            if (matrix[i, 0] == matrix[newState, symbolNr + 1])
-                            {
-                                count++;
-                            }
-                        }
-
-                            if (count < 1) {
-                                newRow++;
-                                matrix[newRow, 0] = matrix[newState, symbolNr + 1];
-                            }
-                            count = 0;
-
-                        // Kijkt naar het omgekeerde van A <- B en voegt hiervoor een toestand toe aan de lijst.
-                        foreach (Transition transition2 in transitions)
-                            if (transition2.getFromState() == transition.getToState() && transition2.getSymbol() == transition.getSymbol())
-                                for (int i = 0; i < matrix.GetLength(0); i++)
-                                    if (matrix[i, 0] == transition.getToState())
-                                        matrix[i, symbolNr + 1] += transition.getFromState();
                     }
                 }
             }
 
-            // Vult de lege plaatsen op met een lege string. (Lege verzameling)
+            // Controleert op dubbele toestanden tussen dimensie 0 en de dimensies a, b enz. 
+            // Als er geen dubbele toestanden zijn voegt het een toestand toe.
+            int up = 0;
+            for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
+            {
+                for (int row1 = 0; row1 < matrix.GetLength(0); row1++) 
+                {
+                    for (int row2 = 0; row2 < matrix.GetLength(0); row2++)
+                    {
+
+                        if (matrix[row1, symbolNr + 1] == matrix[row2, 0])
+                        {
+                            count++;
+                        }
+
+                    }
+
+                    if (count < 1)
+                    {
+                        matrix[up + beginState.Length, 0] = matrix[row1, symbolNr+1];
+                        up++;
+                    }
+                    count = 0;             
+                    
+               }
+            }
+
+            /*
+                Controleren waar de toestanden naar toe leiden op basis van symbool
+                Dit principe herhalen totdat er geen mogelijkheiden zijn!
+            */
+
+            // Maakt een splitsing bij karakters groter dan 2.
+            string split = "";
             for (int i = 0; i < matrix.GetLength(0); i++)
-                for (int j = 0; j < symbols.Length; j++)
-                    if (matrix[i, j] == null)
-                        matrix[i, j] = " ";
+            {
+                if(matrix[i, 0] != null) {
+                    if (matrix[i, 0].Length > 1)
+                    {
+                        split = matrix[i, 0];
+
+                        for (int j = 0; j < split.Length; j++) {
+                            string characters = split[j].ToString();
+
+                        }
+                    }
+                }
+            }
+
+                // Kijkt naar het omgekeerde van A <- B en voegt hiervoor een toestand toe aan de lijst.
+                /*
+                foreach (Transition transition2 in transitions)
+                    if (transition2.getFromState() == transition.getToState() && transition2.getSymbol() == transition.getSymbol())
+                        for (int i = 0; i < matrix.GetLength(0); i++)
+                            if (matrix[i, 0] == transition.getToState())
+                                matrix[i, symbolNr + 1] += transition.getFromState();
+
+            }
+        }
+    }
+                */
+                // Vult de lege plaatsen op met een lege string. (Lege verzameling)
+                for (int i = 0; i < matrix.GetLength(0); i++)
+                    for (int j = 0; j < symbols.Length; j++)
+                        if (matrix[i, j] == null)
+                            matrix[i, j] = " ";
 
             epsilonClosure();
 
