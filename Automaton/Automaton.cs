@@ -9,7 +9,7 @@ namespace Automaton
     class Automaton
     {
         List<Transition> transitions = new List<Transition>();
-        string[,] matrix = new string[19, 6];
+        string[,] matrix = new string[10, 6];
 
         char[] symbols;
         string[] beginState;
@@ -31,7 +31,6 @@ namespace Automaton
         public void ndfaToDFA()
         {
             int count = 0;
-            int newState = 0;
 
             foreach (Transition transition in transitions)
             {
@@ -53,7 +52,6 @@ namespace Automaton
                         {
                             if (matrix[row, 0] == transition.getFromState()) {
                                 matrix[row, symbolNr + 1] += transition.getToState();
-                                newState = row;
                             }
                         }
                     }
@@ -92,23 +90,45 @@ namespace Automaton
                 Dit principe herhalen totdat er geen mogelijkheiden zijn!
             */
 
-            // Maakt een splitsing bij karakters groter dan 2.
+            int length = 0;
+            for (int index = 0; index < matrix.GetLength(0); index++) {
+                if (matrix[index, 0] != null) {
+                    length++;
+                }
+            }
+                   
             string split = "";
-            for (int i = 0; i < matrix.GetLength(0); i++)
+            for (int row = beginState.Length; row < matrix.GetLength(0); row++)
             {
-                if(matrix[i, 0] != null) {
-                    if (matrix[i, 0].Length > 1)
+                // Maakt een splitsing bij karakters groter dan 2 en slaat dit op in een string array.
+                if (matrix[row, 0] != null && matrix[row, 0].Length > 1)
+                {
+                    split = matrix[row, 0];
+
+                    //Controleert de transition voegt de fromstate toe aan de tweedimensionale array.
+                    foreach (Transition transition in transitions) 
                     {
-                        split = matrix[i, 0];
+                        for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
+                        {
+                            if (symbols[symbolNr] == transition.getSymbol())
+                            {
+                                for (int index = 0; index < split.Length; index++) 
+                                {
+                                    if (split[index].ToString() == transition.getFromState())
+                                    {
 
-                        for (int j = 0; j < split.Length; j++) {
-                            string characters = split[j].ToString();
 
+                                        matrix[row, symbolNr + 1] += transition.getToState();
+
+                                                 
+                                    }                                                           
+                                }
+                            }
                         }
                     }
                 }
-            }
-
+            } 
+            
                 // Kijkt naar het omgekeerde van A <- B en voegt hiervoor een toestand toe aan de lijst.
                 /*
                 foreach (Transition transition2 in transitions)
