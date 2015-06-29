@@ -11,7 +11,7 @@ namespace Automaton
         static void Main(string[] args)
         {
             char[] symbols = { 'a', 'b' };
-            string[] beginState = { "A" };
+            string[] beginState = { "A", "B" };
             string endState = "F";
 
             Automaton automaton = new Automaton(symbols, beginState, endState);

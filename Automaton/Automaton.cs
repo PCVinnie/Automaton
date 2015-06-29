@@ -9,11 +9,12 @@ namespace Automaton
     class Automaton
     {
         List<Transition> transitions = new List<Transition>();
-        string[,] matrix = new string[10, 6];
+        string[,] matrix = new string[30, 6];
 
         char[] symbols;
         string[] beginState;
         string endState;
+        int up = 0;
 
         public Automaton(char[] symbols, string[] beginState, string endState)
         {
@@ -30,7 +31,6 @@ namespace Automaton
 
         public void ndfaToDFA()
         {
-            int count = 0;
 
             foreach (Transition transition in transitions)
             {
@@ -39,7 +39,6 @@ namespace Automaton
 
                     if (symbols[symbolNr] == transition.getSymbol())
                     {
-                        // Voegt de begintoestanden aan de dimensie 0.
                         for (int i = 0; i < beginState.Length; i++)
                         {
                             if (beginState[i] == transition.getFromState())
@@ -47,7 +46,6 @@ namespace Automaton
                                 matrix[i, 0] = beginState[i];                          
                             }
                         }
-                        // Controleert de begintoestanden en voegt de eindtoestanden toe aan de dimensies a, b enz.
                         for (int row = 0; row < matrix.GetLength(0); row++)
                         {
                             if (matrix[row, 0] == transition.getFromState()) {
@@ -58,77 +56,60 @@ namespace Automaton
                 }
             }
 
-            // Controleert op dubbele toestanden tussen dimensie 0 en de dimensies a, b enz. 
-            // Als er geen dubbele toestanden zijn voegt het een toestand toe.
-            int up = 0;
-            for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
-            {
-                for (int row1 = 0; row1 < matrix.GetLength(0); row1++) 
-                {
-                    for (int row2 = 0; row2 < matrix.GetLength(0); row2++)
-                    {
+            addNewState();
 
-                        if (matrix[row1, symbolNr + 1] == matrix[row2, 0])
-                        {
-                            count++;
-                        }
-
-                    }
-
-                    if (count < 1)
-                    {
-                        matrix[up + beginState.Length, 0] = matrix[row1, symbolNr+1];
-                        up++;
-                    }
-                    count = 0;             
-                    
-               }
-            }
-
-            /*
-                Controleren waar de toestanden naar toe leiden op basis van symbool
-                Dit principe herhalen totdat er geen mogelijkheiden zijn!
-            */
-
-            int length = 0;
-            for (int index = 0; index < matrix.GetLength(0); index++) {
-                if (matrix[index, 0] != null) {
-                    length++;
-                }
-            }
-                   
             string split = "";
-            for (int row = beginState.Length; row < matrix.GetLength(0); row++)
+            string split1 = "";
+            for (int solution = 0; solution < countStates(); solution++)
             {
-                // Maakt een splitsing bij karakters groter dan 2 en slaat dit op in een string array.
-                if (matrix[row, 0] != null && matrix[row, 0].Length > 1)
+                for (int row = beginState.Length; row < matrix.GetLength(0); row++)
                 {
-                    split = matrix[row, 0];
-
-                    //Controleert de transition voegt de fromstate toe aan de tweedimensionale array.
-                    foreach (Transition transition in transitions) 
+                    // Maakt een splitsing bij karakters groter dan 2 en slaat dit op in een string array.
+                    if (matrix[row, 0] != null && matrix[row, 0].Length > 1)
                     {
-                        for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
+                        split = matrix[row, 0];
+
+                        //Controleert de transition voegt de fromstate toe aan de tweedimensionale array.
+                        foreach (Transition transition in transitions)
                         {
-                            if (symbols[symbolNr] == transition.getSymbol())
+                            for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
                             {
-                                for (int index = 0; index < split.Length; index++) 
+                                if (symbols[symbolNr] == transition.getSymbol())
                                 {
-                                    if (split[index].ToString() == transition.getFromState())
+                                    for (int index = 0; index < split.Length; index++)
                                     {
-
-
-                                        matrix[row, symbolNr + 1] += transition.getToState();
-
-                                                 
-                                    }                                                           
+                                        if (split[index].ToString() == transition.getFromState())
+                                        {
+                                            matrix[row, symbolNr + 1] += transition.getToState();
+                                        }
+                                    }
                                 }
                             }
                         }
+
                     }
                 }
-            } 
-            
+
+                for (int row = 0; row < matrix.GetLength(0); row++)
+                {
+                    for (int column = 0; column < symbols.Length+1; column++)
+                    {
+
+                        split1 = matrix[row, column];
+                        if (split1 != null)
+                        {
+                
+                            matrix[row, column] = String.Join("", split1.Distinct());
+
+                        }
+                    }
+                }
+
+                addNewState();
+
+            }
+
+
                 // Kijkt naar het omgekeerde van A <- B en voegt hiervoor een toestand toe aan de lijst.
                 /*
                 foreach (Transition transition2 in transitions)
@@ -143,18 +124,60 @@ namespace Automaton
                 */
                 // Vult de lege plaatsen op met een lege string. (Lege verzameling)
                 for (int i = 0; i < matrix.GetLength(0); i++)
+                {
                     for (int j = 0; j < symbols.Length; j++)
+                    {
                         if (matrix[i, j] == null)
+                        {
                             matrix[i, j] = " ";
-
-            epsilonClosure();
+                        }
+                    }
+                }
 
             printDFATable();
         }
 
-        public void epsilonClosure()
+        public void addNewState() {
+
+            int count = 0;
+            for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
+            {
+                for (int row1 = 0; row1 < matrix.GetLength(0); row1++)
+                {
+                    for (int row2 = 0; row2 < matrix.GetLength(0); row2++)
+                    {
+
+                        if (matrix[row1, symbolNr + 1] == matrix[row2, 0])
+                        {
+                            count++;
+                        }
+
+                    }
+
+                    if (count < 1)
+                    {
+                        matrix[up + beginState.Length, 0] = matrix[row1, symbolNr + 1];
+                        up++;
+                    }
+                    count = 0;
+                }
+            }
+        
+        }
+
+        public int countStates()
         {
-            
+            string states = "";
+            string unique = "";
+
+            foreach (Transition transition in transitions)
+            {
+                states += transition.getFromState();
+                states += transition.getToState();
+                unique = String.Join("", states.Distinct());
+            }
+
+            return (int)Math.Pow(Convert.ToDouble(states.Length), Convert.ToDouble(symbols.Length));
         }
 
         public void printDFATable()
