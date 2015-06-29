@@ -11,7 +11,7 @@ namespace Automaton
         static void Main(string[] args)
         {
             char[] symbols = { 'a', 'b' };
-            string beginState = "A";
+            string[] beginState = { "A", "B" };
             string endState = "F";
 
             Automaton automaton = new Automaton(symbols, beginState, endState);
@@ -37,17 +37,22 @@ namespace Automaton
                     switch (value) {
                         case 1:
                             /* NDFA voorbeeld */
-                            automaton.addTransition(new Transition("A", 'a', "B"));
+                            automaton.addTransition(new Transition("A", 'b', "B"));
+                            automaton.addTransition(new Transition("A", 'a', "C"));
                             automaton.addTransition(new Transition("A", 'b', "C"));
-                            automaton.addTransition(new Transition("A", 'b', "G"));
-                            automaton.addTransition(new Transition("A", 'b', "X"));
-                            automaton.addTransition(new Transition("A", 'b', "Z"));
-                            automaton.addTransition(new Transition("B", 'b', "E"));
-                            automaton.addTransition(new Transition("C", 'a', "D"));
-                            automaton.addTransition(new Transition("D", 'b', "F"));
-                            automaton.addTransition(new Transition("E", 'a', "F"));
-
-                           // automaton.check();
+                            automaton.addTransition(new Transition("A", 'a', "E"));
+                            automaton.addTransition(new Transition("A", 'b', "E"));
+                            automaton.addTransition(new Transition("B", 'a', "A"));
+                            automaton.addTransition(new Transition("B", 'b', "A"));
+                            automaton.addTransition(new Transition("B", 'a', "D"));
+                            automaton.addTransition(new Transition("B", 'b', "D"));
+                            automaton.addTransition(new Transition("C", 'b', "A"));
+                            automaton.addTransition(new Transition("C", 'b', "D"));
+                            automaton.addTransition(new Transition("D", 'b', "B"));
+                            automaton.addTransition(new Transition("D", 'a', "C"));
+                            automaton.addTransition(new Transition("D", 'b', "C"));
+                            automaton.addTransition(new Transition("D", 'a', "E"));
+                            automaton.addTransition(new Transition("D", 'b', "E"));
 
                             /* Print NDFA. */
                             Console.WriteLine("NDFA:");
@@ -57,6 +62,7 @@ namespace Automaton
                             /* Print NDFA -> DFA */                         
                             Console.WriteLine("NDFA->DFA");
                             automaton.ndfaToDFA();
+                            automaton.printDFATable();
                             Console.WriteLine(" ");
                             break;
                         case 2:
