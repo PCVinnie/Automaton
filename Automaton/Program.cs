@@ -62,6 +62,7 @@ namespace Automaton
                             /* Print NDFA -> DFA */                         
                             Console.WriteLine("NDFA->DFA");
                             automaton.ndfaToDFA();
+                            automaton.printDFATable();
                             Console.WriteLine(" ");
                             break;
                         case 2:
