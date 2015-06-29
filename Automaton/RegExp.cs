@@ -8,132 +8,79 @@ namespace Automaton
 {
     class RegExp : Representation
     {
-        public enum Operator { PLUS, STAR, OR, DOT, ONE }
-        Operator op;
-        String terminals;
-        RegExp left, right;
+        Stack<NFATable> OperandStack = new Stack<NFATable>();
+        HashSet<char> InputSet = new HashSet<char>();
+        string input;
+        int nextStateId;
 
-        public RegExp()
+        public RegExp(string s)
         {
-            op = Operator.ONE;
-            terminals = "";
-            left = null;
-            right = null;
-        }
-    
-        public RegExp(String p)
-        {
-            op = Operator.ONE;
-            terminals = p;
-            left = null;
-            right = null;
-        }
-    
-        public RegExp plus()
-        {
-            RegExp result = new RegExp();
-            result.op = Operator.PLUS;
-            result.left = this;
-            return result;
+            this.input = s;
         }
 
-        public RegExp star()
+        private class RXState
         {
-            RegExp result = new RegExp();
-            result.op = Operator.STAR;
-            result.left = this;
-            return result;
-        }
+            int Id;
+            List<Tuple<RXState, char>> Transitions = new List<Tuple<RXState, char>>();
 
-        public RegExp or(RegExp e2)
-        {
-            RegExp result = new RegExp();
-            result.op = Operator.OR;
-            result.left = this;
-            result.right = e2;
-            return result;
-        }
-
-        public RegExp dot(RegExp e2)
-        {
-            RegExp result = new RegExp();
-            result.op = Operator.DOT;
-            result.left = this;
-            result.right = e2;
-            return result;
-        }
-
-        public SortedSet <String> getLanguage(int maxSteps)
-        {
-            SortedSet<String> emptyLanguage = new SortedSet<String>();
-            SortedSet<String> languageResult = new SortedSet<String>();
-        
-            SortedSet<String> languageLeft, languageRight;
-        
-            if (maxSteps < 1) 
-                return emptyLanguage;
-        
-            switch (this.op) 
-            {
-                case Operator.ONE:
-                    languageResult.Add(terminals);
-                    break;
-
-                case Operator.OR:
-                    languageLeft = left == null ? emptyLanguage : left.getLanguage(maxSteps - 1);
-                    languageRight = right == null ? emptyLanguage : right.getLanguage(maxSteps - 1);
-                    foreach (String s in languageLeft)
-                        languageResult.Add(s);
-                    foreach (String s in languageRight)
-                        languageResult.Add(s);
-                    break;
-
-                case Operator.DOT:
-                    languageLeft = left == null ? emptyLanguage : left.getLanguage(maxSteps - 1);
-                    languageRight = right == null ? emptyLanguage : right.getLanguage(maxSteps - 1);
-                    foreach (String s1 in languageLeft)
-                        foreach (String s2 in languageRight)
-                           languageResult.Add(s1 + s2);
-                    break;
-
-                case Operator.STAR:
-
-                case Operator.PLUS:
-                    languageLeft = left == null ? emptyLanguage : left.getLanguage(maxSteps - 1);
-                    foreach (String s in languageLeft)
-                        languageResult.Add(s);
-                    for (int i = 1; i < maxSteps; i++)
-                    {   
-                        HashSet<String> languageTemp = new HashSet<String>(languageResult);
-                        foreach (String s1 in languageLeft)
-                            foreach (String s2 in languageTemp)
-                               languageResult.Add(s1 + s2);
-                    }
-                    if (this.op  == Operator.STAR)
-                        languageResult.Add("");
-                    break;
-                
-                default:
-                    Console.WriteLine("getLanguage is nog niet gedefinieerd voor de operator: " + this.op);
-                    break;
+            public RXState(int id) 
+            { 
+                this.Id = id; 
             }
-            return languageResult;
-        }    
-       
-        public void printRegExp()
-        {
-            Console.WriteLine("");
+
+            public void AddTransition(RXState rxt, char symbol) 
+            {
+                Transitions.Add(new Tuple<RXState, char>(rxt, symbol));
+            }
         }
 
-        public void ToNDFA(string input)
+        private class NFATable
         {
-
+            public Stack<RXState> RXStates = new Stack<RXState>();
         }
 
-        public static bool CheckRegExpInput(string input)
+        public void ToNDFA(string s)
+        {
+            foreach (char c in s)
+            {
+                switch (c)
+                {
+                    case '(':
+                        break;
+                    case ')':
+                        break;
+                    case 'a':
+                        Push('a');
+                        break;
+                    case 'b':
+                        Push('b');
+                        break;
+                    case '|':
+                        break;
+                    case '*':
+                        break;
+                }
+            }
+        }
+
+        public void Push(char symbol)
+        {
+            RXState s0 = new RXState(nextStateId++);
+            RXState s1 = new RXState(nextStateId++);
+            s0.AddTransition(s1, 'a');
+
+            NFATable NfaTable = new NFATable();
+            NfaTable.RXStates.Push(s0);
+            NfaTable.RXStates.Push(s1);
+
+            OperandStack.Push(NfaTable);
+            InputSet.Add(symbol);
+        }
+
+        public static bool CheckRegExpInput(string s)
         {
             char[] regExpChars = "()ab|*".ToCharArray();
-            foreach (char c in input.Where(c => !regExpChars.Contains(c)))
+            foreach (char c in s.Where(c => !regExpChars.Contains(c)))
                 return false;
             return true;
         }
