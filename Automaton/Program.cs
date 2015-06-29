@@ -81,9 +81,10 @@ namespace Automaton
                         case 4:
                             Console.WriteLine("Voer een Reguliere Expressie in. Symbolen: ( ) a b | *");
                             string input = Console.ReadLine();
+                            RegExp r;
                             if (RegExp.CheckRegExpInput(input))
                             {
-                                
+                                r = new RegExp(input);
                             }
                             Console.WriteLine("Input error!");
                             break;
