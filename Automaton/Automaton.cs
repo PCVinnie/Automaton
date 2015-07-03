@@ -42,7 +42,6 @@ namespace Automaton
             {
                 for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
                 {
-
                     if (symbols[symbolNr] == transition.getSymbol())
                     {
                         // Voegt de begintoestanden aan de dimensie 0.
@@ -144,6 +143,8 @@ namespace Automaton
 
         public void epsilonClosure()
         {
+            string splitStates1 = "";
+
             foreach (Transition transition in transitions) 
             {
                 if (transition.getSymbol() == '$')
@@ -160,17 +161,27 @@ namespace Automaton
                                     {
                                         for (int row = 0; row < matrix.GetLength(0); row++)
                                         {
-                                            if (matrix[row, 0].Length > 1 && matrix[row, 0] != null)
+                                            if (matrix[row, 0] != null)
                                             {
-                                                //Split aan toevoegen
-
-
-                                            }
-                                            else
-                                            {
-                                                if (matrix[row, 0] == transition.getFromState())
+                                                // Maakt een splitsing bij karakters groter dan 2 en slaat dit op in een string array.
+                                                if (matrix[row, 0].Length > 1)
                                                 {
-                                                    matrix[row, symbolNr + 1] += transition2.getToState();
+                                                    //Split aan toevoegen
+                                                    splitStates1 = matrix[row, 0];
+                                                    for (int index = 0; index < splitStates1.Length; index++)
+                                                    {
+                                                        if (splitStates1[index].ToString() == transition.getFromState())
+                                                        {
+                                                            matrix[row, symbolNr + 1] += transition2.getToState();
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (matrix[row, 0] == transition.getFromState())
+                                                    {
+                                                        matrix[row, symbolNr + 1] += transition2.getToState();
+                                                    }
                                                 }
                                             }
                                         }
