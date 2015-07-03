@@ -53,13 +53,7 @@ namespace Automaton
                                 matrix[i, 0] = beginState[i];                          
                             }
                         }
-                        // Controleert de begintoestanden en voegt de eindtoestanden toe aan de dimensies a, b enz.
-                        for (int row = 0; row < matrix.GetLength(0); row++)
-                        {
-                            if (matrix[row, 0] == transition.getFromState()) {
-                                matrix[row, symbolNr + 1] += transition.getToState();
-                            }
-                        }
+                        addStateToDimension();
                     }
                 }
             }
@@ -99,20 +93,7 @@ namespace Automaton
                         }
                         else
                         {
-                            //Indien het een enkele toestand is wordt het opgeslagen in een string array.
-                            foreach (Transition transition in transitions)
-                            {
-                                for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
-                                {
-                                    for (int row2 = 0; row2 < matrix.GetLength(0); row2++)
-                                    {
-                                        if (matrix[row2, 0] == transition.getFromState())
-                                        {
-                                            matrix[row2, symbolNr + 1] += transition.getToState();
-                                        }
-                                    }
-                                }
-                            }
+                            addStateToDimension();
                         }
                     }
                 }
@@ -134,6 +115,27 @@ namespace Automaton
             addEmptyString();
 
             return matrix;
+        }
+
+        public void addStateToDimension()
+        {
+            // Controleert de begintoestanden en voegt de eindtoestanden toe aan de dimensies a, b enz.
+            foreach (Transition transition in transitions)
+            {
+                for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
+                {
+                    if (symbols[symbolNr] == transition.getSymbol())
+                    {
+                        for (int row = 0; row < matrix.GetLength(0); row++)
+                        {
+                            if (matrix[row, 0] == transition.getFromState()) 
+                            {
+                                matrix[row, symbolNr + 1] += transition.getToState();
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public void reverse()
@@ -237,7 +239,7 @@ namespace Automaton
                         for (int j = 0; j < symbols.Length; j++)
                         {
                             string txt = matrix[i, j].ToString();
-                            sw.WriteLine(" " + txt);
+                            sw.WriteLine(txt + ",");
                         }
                     }
                 }

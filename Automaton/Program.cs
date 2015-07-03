@@ -56,7 +56,7 @@ namespace Automaton
                             automaton.addTransition(new Transition("D", 'b', "C"));
                             automaton.addTransition(new Transition("D", 'a', "E"));
                             automaton.addTransition(new Transition("D", 'b', "E"));
-                            automaton.addTransition(new Transition("E", 'a', "D"));
+                            automaton.addTransition(new Transition("E", 'a', "A"));
 
                             /* Print NDFA. */
                             Console.WriteLine("NDFA:");
