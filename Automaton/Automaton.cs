@@ -87,6 +87,10 @@ namespace Automaton
                                             }
                                         }
                                     }
+                                    else
+                                    {
+                                        epsilonClosure();
+                                    }
                                 }
                             }
 
@@ -134,6 +138,47 @@ namespace Automaton
                             }
                         }
                     }
+                }
+            }
+        }
+
+        public void epsilonClosure()
+        {
+            foreach (Transition transition in transitions) 
+            {
+                if (transition.getSymbol() == '$')
+                {
+                    foreach (Transition transition2 in transitions)
+                    {
+                        if (transition2.getSymbol() != '$')
+                        {
+                            if (transition.getToState() == transition2.getFromState())
+                            {
+                                for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
+                                {
+                                    if (symbols[symbolNr] == transition2.getSymbol())
+                                    {
+                                        for (int row = 0; row < matrix.GetLength(0); row++)
+                                        {
+                                            if (matrix[row, 0].Length > 1 && matrix[row, 0] != null)
+                                            {
+                                                //Split aan toevoegen
+
+
+                                            }
+                                            else
+                                            {
+                                                if (matrix[row, 0] == transition.getFromState())
+                                                {
+                                                    matrix[row, symbolNr + 1] += transition2.getToState();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }            
                 }
             }
         }
