@@ -15,14 +15,12 @@ namespace Automaton
         string[,] matrix;
         string[] beginState;
 
-        string endState;
         int up = 0;
 
-        public Automaton(char[] symbols, string[] beginState, string endState)
+        public Automaton(char[] symbols, string[] beginState)
         {
             this.symbols = symbols;
             this.beginState = beginState;
-            this.endState = endState;
 
             matrix = new string[15, 6];
             transitions = new List<Transition>();
@@ -67,7 +65,7 @@ namespace Automaton
                 {            
                     if (matrix[row, 0] != null)
                     {
-                        // Maakt een splitsing bij karakters groter dan 2 en slaat dit op in een string array.
+                        // Maakt een splitsing bij karakters groter dan 1 en slaat dit op in een string array.
                         if (matrix[row, 0].Length > 1)
                         {
                             splitStates1 = matrix[row, 0];
@@ -166,10 +164,9 @@ namespace Automaton
                                         {
                                             if (matrix[row, 0] != null)
                                             {
-                                                // Maakt een splitsing bij karakters groter dan 2 en slaat dit op in een string array.
+                                                // Maakt een splitsing bij karakters groter dan 1 en slaat dit op in een string array.
                                                 if (matrix[row, 0].Length > 1)
                                                 {
-                                                    //Split aan toevoegen
                                                     splitStates1 = matrix[row, 0];
                                                     for (int index = 0; index < splitStates1.Length; index++)
                                                     {
@@ -181,6 +178,7 @@ namespace Automaton
                                                 }
                                                 else
                                                 {
+                                                    // Indien het gaat over één enkele toestand.
                                                     if (matrix[row, 0] == transition.getFromState())
                                                     {
                                                         matrix[row, symbolNr + 1] += transition2.getToState();
@@ -254,9 +252,14 @@ namespace Automaton
             return (int)Math.Pow(Convert.ToDouble(unique.Length), Convert.ToDouble(symbols.Length));
         }
 
-        List<Transition> getTransitions()
+        public List<Transition> getTransitions()
         {
             return transitions;
+        }
+
+        public void clearTransitions()
+        {
+            transitions.Clear();
         }
 
         public void printTransitions()
