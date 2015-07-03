@@ -38,6 +38,7 @@ namespace Automaton
 
             string splitStates1 = "";
             string splitStates2 = "";
+            char[] tmp = { };
             foreach (Transition transition in transitions)
             {
                 for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
@@ -101,7 +102,7 @@ namespace Automaton
                     }
                 }
 
-                // Filtert de dubbele toestanden eruit.
+                // Filtert de dubbele toestanden eruit en sorteert de letters.
                 for (int row = 0; row < matrix.GetLength(0); row++)
                 {
                     for (int column = 0; column < symbols.Length+1; column++)
@@ -109,7 +110,9 @@ namespace Automaton
                         splitStates2 = matrix[row, column];
                         if (splitStates2 != null)
                         {
-                            matrix[row, column] = String.Join("", splitStates2.Distinct());
+                            tmp = splitStates2.ToCharArray();
+                            Array.Sort(tmp);
+                            matrix[row, column] = String.Join("", tmp.Distinct());
                         }
                     }
                 }
@@ -192,26 +195,6 @@ namespace Automaton
                     }            
                 }
             }
-        }
-
-        public void reverse()
-        {
-            // Kijkt naar het omgekeerde van A <- B en voegt hiervoor een toestand toe aan de lijst.
-            /*
-            foreach (Transition transition2 in transitions)
-            {
-                if (transition2.getFromState() == transition.getToState() && transition2.getSymbol() == transition.getSymbol())
-                {
-                    for (int i = 0; i < matrix.GetLength(0); i++)
-                    {
-                        if (matrix[i, 0] == transition.getToState())
-                        {
-                            matrix[i, symbolNr + 1] += transition.getFromState();
-                        }
-                    }
-                }
-            }
-            */
         }
 
         public void addEmptyString()
