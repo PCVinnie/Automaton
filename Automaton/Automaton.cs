@@ -226,9 +226,8 @@ namespace Automaton
             }
         }
 
-        public void writeFile() {
-
-            string path = "DFA.txt";
+        public void writeFile(string path) 
+        {
             if (!File.Exists(path))
             {
                 using (StreamWriter sw = File.CreateText(path))
@@ -243,13 +242,19 @@ namespace Automaton
                     }
                 }
             }
-
         }
 
-        public void readFile() {
+        public void readFile(string path) 
+        {
+            using (StreamReader sr = File.OpenText(path)) {
+                string s = "";
+                while ((s = sr.ReadLine()) != null)
+                {
 
+                        Console.WriteLine(s);
 
-
+                }
+            }
         }
     }
 }
