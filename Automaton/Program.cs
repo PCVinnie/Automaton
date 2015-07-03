@@ -11,7 +11,7 @@ namespace Automaton
         static void Main(string[] args)
         {
             char[] symbols = { 'a', 'b' };
-            string[] beginState = { "A", "B" };
+            string[] beginState = { "A" };
             string endState = "F";
 
             Automaton automaton = new Automaton(symbols, beginState, endState);
@@ -53,6 +53,7 @@ namespace Automaton
                             automaton.addTransition(new Transition("D", 'b', "C"));
                             automaton.addTransition(new Transition("D", 'a', "E"));
                             automaton.addTransition(new Transition("D", 'b', "E"));
+                            automaton.addTransition(new Transition("E", 'a', "D"));
 
                             /* Print NDFA. */
                             Console.WriteLine("NDFA:");

@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Automaton
 {
     class Automaton
     {
         List<Transition> transitions = new List<Transition>();
-        string[,] matrix = new string[30, 6];
+        string[,] matrix = new string[15, 6];
 
         char[] symbols;
         string[] beginState;
@@ -66,30 +67,50 @@ namespace Automaton
             for (int solution = 0; solution < countStates(); solution++)
             {
                 for (int row = beginState.Length; row < matrix.GetLength(0); row++)
-                {
-                    // Maakt een splitsing bij karakters groter dan 2 en slaat dit op in een string array.
-                    if (matrix[row, 0] != null && matrix[row, 0].Length > 1)
+                {            
+                    if (matrix[row, 0] != null)
                     {
-                        splitStates1 = matrix[row, 0];
-
-                        //Controleert de transition voegt de fromstate toe aan de tweedimensionale array.
-                        foreach (Transition transition in transitions)
+                        // Maakt een splitsing bij karakters groter dan 2 en slaat dit op in een string array.
+                        if (matrix[row, 0].Length > 1)
                         {
-                            for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
+                            splitStates1 = matrix[row, 0];
+
+                            //Controleert de transition voegt de fromstate toe aan de tweedimensionale array.
+                            foreach (Transition transition in transitions)
                             {
-                                if (symbols[symbolNr] == transition.getSymbol())
+                                for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
                                 {
-                                    for (int index = 0; index < splitStates1.Length; index++)
+                                    if (symbols[symbolNr] == transition.getSymbol())
                                     {
-                                        if (splitStates1[index].ToString() == transition.getFromState())
+                                        for (int index = 0; index < splitStates1.Length; index++)
                                         {
-                                            matrix[row, symbolNr + 1] += transition.getToState();
+                                            if (splitStates1[index].ToString() == transition.getFromState())
+                                            {
+                                                matrix[row, symbolNr + 1] += transition.getToState();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                        else
+                        {
+                            //Indien het een enkele toestand is wordt het opgeslagen in een string array.
+                            foreach (Transition transition in transitions)
+                            {
+                                for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
+                                {
+                                    for (int row2 = 0; row2 < matrix.GetLength(0); row2++)
+                                    {
+                                        if (matrix[row2, 0] == transition.getFromState())
+                                        {
+                                            matrix[row2, symbolNr + 1] += transition.getToState();
                                         }
                                     }
                                 }
                             }
                         }
-
                     }
                 }
 
@@ -115,14 +136,18 @@ namespace Automaton
             // Kijkt naar het omgekeerde van A <- B en voegt hiervoor een toestand toe aan de lijst.
             /*
             foreach (Transition transition2 in transitions)
+            {
                 if (transition2.getFromState() == transition.getToState() && transition2.getSymbol() == transition.getSymbol())
+                {
                     for (int i = 0; i < matrix.GetLength(0); i++)
+                    {
                         if (matrix[i, 0] == transition.getToState())
+                        {
                             matrix[i, symbolNr + 1] += transition.getFromState();
-
-        }
-    }
-}
+                        }
+                    }
+                }
+            }
             */
         }
 
@@ -180,7 +205,7 @@ namespace Automaton
                 unique = String.Join("", states.Distinct());
             }
 
-            return (int)Math.Pow(Convert.ToDouble(states.Length), Convert.ToDouble(symbols.Length));
+            return (int)Math.Pow(Convert.ToDouble(unique.Length), Convert.ToDouble(symbols.Length));
         }
 
         public void printDFATable()
@@ -191,6 +216,8 @@ namespace Automaton
             bool asPrint = true;
             int totLength = 0;
             int strLength = 0;
+
+            writeFile();
 
             //Schaalt het tabel in de console.
             for (int i = 0; i < matrix.GetLength(0); i++) {
@@ -263,6 +290,32 @@ namespace Automaton
             {
                 Console.WriteLine(obj.print());
             }
+        }
+
+        public void writeFile() {
+
+            string path = "DFA.txt";
+            if (!File.Exists(path))
+            {
+                using (StreamWriter sw = File.CreateText(path))
+                {
+                    for (int i = 0; i < matrix.GetLength(0); i++)
+                    {
+                        for (int j = 0; j < symbols.Length; j++)
+                        {
+                            string txt = matrix[i, j].ToString();
+                            sw.WriteLine(" " + txt);
+                        }
+                    }
+                }
+            }
+
+        }
+
+        public void readFile() {
+
+
+
         }
     }
 }
