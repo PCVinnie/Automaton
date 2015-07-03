@@ -9,11 +9,12 @@ namespace Automaton
 {
     class Automaton
     {
-        List<Transition> transitions = new List<Transition>();
-        string[,] matrix = new string[15, 6];
-
+        List<Transition> transitions;
+     
         char[] symbols;
+        string[,] matrix;
         string[] beginState;
+
         string endState;
         int up = 0;
 
@@ -23,6 +24,8 @@ namespace Automaton
             this.beginState = beginState;
             this.endState = endState;
 
+            matrix = new string[15, 6];
+            transitions = new List<Transition>();
         }
 
         public void addTransition(Transition t)
@@ -30,7 +33,7 @@ namespace Automaton
             transitions.Add(t);
         }
 
-        public void ndfaToDFA()
+        public string[,] ndfaToDFA()
         {
 
             string splitStates1 = "";
@@ -129,6 +132,8 @@ namespace Automaton
                 addNewState();
             }
             addEmptyString();
+
+            return matrix;
         }
 
         public void reverse()
@@ -206,77 +211,6 @@ namespace Automaton
             }
 
             return (int)Math.Pow(Convert.ToDouble(unique.Length), Convert.ToDouble(symbols.Length));
-        }
-
-        public void printDFATable()
-        {
-            string symbol = "";
-            string table = "";
-            string space = "";
-            bool asPrint = true;
-            int totLength = 0;
-            int strLength = 0;
-
-            writeFile();
-
-            //Schaalt het tabel in de console.
-            for (int i = 0; i < matrix.GetLength(0); i++) {
-                
-                for (int j = 0; j < symbols.Length; j++) {
-
-                    for (int l = 0; l < matrix.GetLength(0); l++)
-                    {
-                        if (matrix[l, 0].Length > strLength)
-                        {
-                            strLength = matrix[l, 0].Length;
-                        }
-                    }
-
-                    totLength = strLength - matrix[i, j].Length;
-
-                    for (int m = 0; m < totLength; m++)
-                    {
-                        space += " ";
-                    }
-
-                    if (matrix[i, j + 1] == null)
-                    {
-                        table += space + " |  " + matrix[i, j + 1];
-                    }
-                    else
-                    {
-                        table += space + " | " + matrix[i, j + 1];
-                    }
-                    space = "";
-                
-                }
-
-                if (asPrint == true) {
-
-                    totLength = strLength - 1;
-
-                    for (int k = 0; k < totLength; k++)
-                    {
-                        space += " ";
-                    }
-
-                    for (int l = 0; l < symbols.Length; l++)
-                    {
-                        symbol += space + " | " + symbols[l];
-                    }
-
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine(" " + symbol);
-                    Console.ResetColor();
-
-                    symbol = "";
-                    space = "";
-                    asPrint = false;
-
-                }
-                Console.WriteLine(matrix[i, 0] + table);
-                table = "";
-            }
         }
 
         List<Transition> getTransitions()

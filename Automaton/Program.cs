@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Automaton
 {
     class Program
-    {   
+    {
         static void Main(string[] args)
         {
             char[] symbols = { 'a', 'b' };
@@ -22,19 +22,22 @@ namespace Automaton
             Console.WriteLine("Vincent Stout & Lesley van Hoek");
             Console.WriteLine("-------------------------------");
 
-            while(true) {
+            while (true)
+            {
                 Console.WriteLine("Kies uit 1 t/m 4:");
                 Console.WriteLine("1. Gebruik NDFA->DFA voorbeeld");
                 Console.WriteLine("2. Handmatige invoer NDFA->DFA");
                 Console.WriteLine("3. ");
                 Console.WriteLine("4. Sluiten");
                 Console.WriteLine("4. Handmatige invoer Reguliere Expressie");
-                
+
                 string userInput = Console.ReadLine();
                 int value;
-                if (int.TryParse(userInput, out value)) {
-  
-                    switch (value) {
+                if (int.TryParse(userInput, out value))
+                {
+
+                    switch (value)
+                    {
                         case 1:
                             /* NDFA voorbeeld */
                             automaton.addTransition(new Transition("A", 'b', "B"));
@@ -60,19 +63,22 @@ namespace Automaton
                             automaton.printTransitions();
                             Console.WriteLine(" ");
 
-                            /* Print NDFA -> DFA */                         
+                            /* Print NDFA -> DFA */
                             Console.WriteLine("NDFA->DFA");
-                            automaton.ndfaToDFA();
-                            automaton.printDFATable();
+                            DFA dfa = new DFA(automaton.ndfaToDFA(),symbols);
+                            dfa.printDFA();
+
                             Console.WriteLine(" ");
                             break;
                         case 2:
                             /* NDFA handmatige invoer */
                             Console.WriteLine("Hoeveel toestanden moeten er aangemaakt worden?");
                             Console.WriteLine("Er moet minimaal 2 toestanden aangemaakt worden!");
-                            int numberOfStates = Int32.Parse(Console.ReadLine());     
-                            if(numberOfStates > 2) {
-                                for(int i = 0; i < numberOfStates; i++) {
+                            int numberOfStates = Int32.Parse(Console.ReadLine());
+                            if (numberOfStates > 2)
+                            {
+                                for (int i = 0; i < numberOfStates; i++)
+                                {
                                     Console.WriteLine("Van toestand: ");
                                     string beginStateInput = Console.ReadLine();
                                     Console.WriteLine("Symbool: ");
@@ -97,9 +103,11 @@ namespace Automaton
                             break;
                         default:
                             Console.WriteLine("Kies een getal van 1 t/m 4.");
-                            break;     
+                            break;
                     }
-                } else {
+                }
+                else
+                {
                     Console.WriteLine("Verkeerde invoer!");
                 }
             }
