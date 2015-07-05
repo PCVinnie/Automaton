@@ -14,6 +14,7 @@ namespace Automaton
         char[] symbols;
         string[,] matrix;
         string[] beginState;
+        int up = 0;
 
         public Automaton(char[] symbols, string[] beginState)
         {
@@ -211,7 +212,6 @@ namespace Automaton
         public void addNewState() 
         {
             int count = 0;
-            int up = 0;
             // Controleert op dubbele toestanden tussen dimensie 0 en de dimensies a, b enz. 
             // Als er geen dubbele toestanden zijn voegt het een toestand toe.
             for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
@@ -264,6 +264,11 @@ namespace Automaton
         public void clearMatrix()
         {
             Array.Clear(matrix, 0, matrix.Length);
+        }
+
+        public void clearPosition()
+        {
+            up = 0;
         }
 
         public void printTransitions()

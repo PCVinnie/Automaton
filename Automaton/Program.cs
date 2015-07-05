@@ -11,7 +11,7 @@ namespace Automaton
         static void Main(string[] args)
         {
             char[] symbols = { 'a', 'b' };
-            string[] beginState = { "A", "D" };
+            string[] beginState = { "A" };
 
             Automaton automaton = new Automaton(symbols, beginState);
 
@@ -51,10 +51,10 @@ namespace Automaton
                             automaton.addTransition(new Transition("D", 'b', "B"));
                             automaton.addTransition(new Transition("D", 'a', "C"));
                             automaton.addTransition(new Transition("D", 'b', "C"));
-                            //automaton.addTransition(new Transition("D", 'a', "E"));
-                            //automaton.addTransition(new Transition("D", 'b', "E"));
-                            automaton.addTransition(new Transition("E", 'a', "A"));
-                            automaton.addTransition(new Transition("D", '$', "E"));
+                            automaton.addTransition(new Transition("D", 'a', "E"));
+                            automaton.addTransition(new Transition("D", 'b', "E"));
+                            //automaton.addTransition(new Transition("E", 'a', "A"));
+                            //automaton.addTransition(new Transition("D", '$', "E"));
 
                             /* Print NDFA */
                             Console.WriteLine("NDFA:");
@@ -69,6 +69,7 @@ namespace Automaton
 
                             automaton.clearTransitions();
                             automaton.clearMatrix();
+                            automaton.clearPosition();
                             break;
                         case 2:
                             /* NDFA voorbeeld */
@@ -195,7 +196,7 @@ namespace Automaton
                                     if (asFileIOError == false)
                                     {
                                         /* Schrijft DFA naar .txt bestand */
-                                        automaton.writeFile("DFA.txt");
+                                        automaton.writeFile("dfa.txt");
                                         Console.WriteLine("DFA is opgeslagen in dfa.txt");
                                         Console.WriteLine(" ");
 
@@ -214,6 +215,7 @@ namespace Automaton
 
                                     automaton.clearTransitions();
                                     automaton.clearMatrix();
+                                    automaton.clearPosition();
                                 }
                                 else
                                 {
