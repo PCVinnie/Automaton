@@ -22,7 +22,7 @@ namespace Automaton
             this.symbols = symbols;
             this.beginState = beginState;
 
-            matrix = new string[15, 6];
+            matrix = new string[15, symbols.Length+1];
             transitions = new List<Transition>();
         }
 

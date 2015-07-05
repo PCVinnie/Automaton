@@ -19,19 +19,34 @@ namespace Automaton
         {
             string unique = "";
             string tmp = "";
+            string oldState = "";
+            bool asState = true;
             foreach (Transition transition in transitions) {
                 tmp += transition.getFromState();
             }
             unique = String.Join("", tmp.Distinct());
-
             string[] txt = new string[unique.Length];
             foreach (Transition transition in transitions) 
             {
+                if (transition.getFromState() != oldState)
+                {
+                    asState = false;
+                    oldState = transition.getFromState();
+                }
+
                 for (int state = 0; state < unique.Length; state++)
                 {
                     if (transition.getFromState() == unique[state].ToString())
                     {
-                        txt[state] += transition.getSymbol() + transition.getToState() + "|";
+                        if (asState)
+                        {
+                            txt[state] += transition.getSymbol() + transition.getToState();
+                        }
+                        else
+                        {
+                            txt[state] += transition.getSymbol() + transition.getToState() + "|";
+                        }
+                        asState = true;
                     }
                 }
             }

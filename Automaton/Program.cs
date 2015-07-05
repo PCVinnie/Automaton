@@ -23,10 +23,10 @@ namespace Automaton
 
             while (true)
             {
-                Console.WriteLine("Kies uit 1 t/m 5:");
+                Console.WriteLine("Kies uit 1 t/m 4:");
                 Console.WriteLine("1. Gebruik NDFA->DFA voorbeeld");
                 Console.WriteLine("2. Gebruik NDFA<->Reguliere Grammatica voorbeeld");
-                Console.WriteLine("3. NDFA, DFA en Reguliere Grammatica opslaan in .txt bestand");
+                Console.WriteLine("3. Handmatige invoer NDFA->DFA en opslaan .txt bestand");
                 Console.WriteLine("4. Handmatige invoer Reguliere Expressie");
 
                 string userInput = Console.ReadLine();
@@ -54,7 +54,7 @@ namespace Automaton
                             //automaton.addTransition(new Transition("D", 'a', "E"));
                             //automaton.addTransition(new Transition("D", 'b', "E"));
                             automaton.addTransition(new Transition("E", 'a', "A"));
-                            //automaton.addTransition(new Transition("D", '$', "E"));
+                            automaton.addTransition(new Transition("D", '$', "E"));
 
                             /* Print NDFA. */
                             Console.WriteLine("NDFA:");
@@ -97,12 +97,78 @@ namespace Automaton
                             RegGra regGra = new RegGra(automaton.getTransitions());
                             regGra.printRegGra();
                             Console.WriteLine(" ");
+
                             break;
                         case 3:
-                            /* Schrijft NDFA, DFA en Reguliere Grammatica naar .txt bestand */
-                            automaton.writeFile("DFA.txt");
-                            Console.WriteLine("DFA is opgeslagen in dfa.txt");
-                            Console.WriteLine(" ");
+                            char symbol = ' ';
+                            char symbolTmp  = ' ';
+                            int number = 0;
+                            bool asError = false;
+                            Console.WriteLine("Geef de aantal toestanden op");
+                            if (int.TryParse(Console.ReadLine(), out number))
+                            {
+                                if (number > 2)
+                                {
+                                    for (int nrOfStates = 0; nrOfStates < number; nrOfStates++)
+                                    {
+                                        Console.WriteLine("Geef een begintoestand");
+                                        string begin = Console.ReadLine();
+                                        Console.WriteLine("Geef een symbool, kies: a, b of $");
+
+                                        if (char.TryParse(Console.ReadLine(), out symbolTmp))
+                                        {
+                                            for (int i = 0; i < symbols.Length; i++)
+                                            {
+                                                if (symbolTmp == symbols[i])
+                                                {
+                                                    symbol = symbolTmp;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Verkeerde invoer!");
+                                            asError = true;
+                                            break;
+                                        }
+
+                                        Console.WriteLine("Geef een eindtoestand");
+                                        string end = Console.ReadLine();
+
+                                        automaton.addTransition(new Transition(begin, symbol, end));
+                                    }
+
+                                    if (asError == false)
+                                    {
+                                        /* Schrijft NDFA, DFA en Reguliere Grammatica naar .txt bestand */
+                                        automaton.writeFile("DFA.txt");
+                                        Console.WriteLine("DFA is opgeslagen in dfa.txt");
+                                        Console.WriteLine(" ");
+                                    }
+                                    asError = false;
+
+                                    /* Print NDFA. */
+                                    Console.WriteLine("NDFA:");
+                                    automaton.printTransitions();
+                                    Console.WriteLine(" ");
+
+                                    /* Print NDFA -> DFA */
+                                    Console.WriteLine("NDFA->DFA");
+                                    DFA dfaFromUserInput = new DFA(automaton.ndfaToDFA(), symbols);
+                                    dfaFromUserInput.printDFA();
+                                    Console.WriteLine(" ");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Geef een getal op groter dan 2!");
+                                    Console.WriteLine(" ");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Verkeerde invoer!");
+                                Console.WriteLine(" ");
+                            }
                             break;
                         case 4:
                             Console.WriteLine("Voer een Reguliere Expressie in. Symbolen: ( ) a b | *");
@@ -115,7 +181,7 @@ namespace Automaton
                             Console.WriteLine("Input error!");
                             break;
                         default:
-                            Console.WriteLine("Kies een getal van 1 t/m 6.");
+                            Console.WriteLine("Kies een getal van 1 t/m 4.");
                             break;
                     }
                 }
