@@ -56,7 +56,7 @@ namespace Automaton
                             automaton.addTransition(new Transition("E", 'a', "A"));
                             automaton.addTransition(new Transition("D", '$', "E"));
 
-                            /* Print NDFA. */
+                            /* Print NDFA */
                             Console.WriteLine("NDFA:");
                             automaton.printTransitions();
                             Console.WriteLine(" ");
@@ -67,6 +67,8 @@ namespace Automaton
                             dfa.printDFA();
                             Console.WriteLine(" ");
 
+                            automaton.clearTransitions();
+                            automaton.clearMatrix();
                             break;
                         case 2:
                             /* NDFA voorbeeld */
@@ -87,7 +89,7 @@ namespace Automaton
                             automaton.addTransition(new Transition("D", 'a', "E"));
                             automaton.addTransition(new Transition("D", 'b', "E"));
 
-                            /* Print NDFA. */
+                            /* Print NDFA */
                             Console.WriteLine("NDFA:");
                             automaton.printTransitions();
                             Console.WriteLine(" ");
@@ -98,23 +100,51 @@ namespace Automaton
                             regGra.printRegGra();
                             Console.WriteLine(" ");
 
+                            regGra.clearTransitions();
                             break;
                         case 3:
                             char symbol = ' ';
                             char symbolTmp  = ' ';
                             int number = 0;
-                            bool asError = false;
+                            bool asBeginState = true;
+                            bool asFileIOError = false;
+                            bool asSymbolError = true;
+                            string begin = "";
+                            string end = "";
                             Console.WriteLine("Geef de aantal toestanden op");
                             if (int.TryParse(Console.ReadLine(), out number))
                             {
-                                if (number > 2)
+                                if (number > 0)
                                 {
                                     for (int nrOfStates = 0; nrOfStates < number; nrOfStates++)
                                     {
-                                        Console.WriteLine("Geef een begintoestand");
-                                        string begin = Console.ReadLine();
-                                        Console.WriteLine("Geef een symbool, kies: a, b of $");
+                                        if (asBeginState == true)
+                                        {
+                                            Console.WriteLine("De begintoestand is: A");
+                                            begin = "A";
+                                            asBeginState = false;
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Geef een begintoestand: A, B, C enz.");
+                                            string beginTmp = Console.ReadLine();
+                                            if (string.IsNullOrEmpty(beginTmp))
+                                            {
+                                                beginTmp = " ";
+                                            }
+                                            
+                                            if (Char.IsLetter(beginTmp[0]) || beginTmp == " ") {
+                                                begin = beginTmp;
+                                            }
+                                            else
+                                            {
+                                                Console.WriteLine("Verkeerde invoer!");
+                                                Console.WriteLine(" ");
+                                                break;
+                                            }
+                                        }
 
+                                        Console.WriteLine("Geef een symbool, kies: a, b of $");
                                         if (char.TryParse(Console.ReadLine(), out symbolTmp))
                                         {
                                             for (int i = 0; i < symbols.Length; i++)
@@ -122,45 +152,72 @@ namespace Automaton
                                                 if (symbolTmp == symbols[i])
                                                 {
                                                     symbol = symbolTmp;
+                                                    asSymbolError = false;
                                                 }
                                             }
+
+                                            if (asSymbolError == true)
+                                            {
+                                                asFileIOError = true;
+                                                Console.WriteLine("Verkeerde invoer!");
+                                                Console.WriteLine(" ");
+                                                break;
+                                            }
+                                            asSymbolError = true;
                                         }
                                         else
                                         {
                                             Console.WriteLine("Verkeerde invoer!");
-                                            asError = true;
+                                            Console.WriteLine(" ");
+                                            asFileIOError = true;
                                             break;
                                         }
+                                        Console.WriteLine("Geef een eindtoestand: A, B, C enz.");
+                                        string endTmp = Console.ReadLine();
+                                        if (string.IsNullOrEmpty(endTmp))
+                                        {
+                                            endTmp = " ";
+                                        }
 
-                                        Console.WriteLine("Geef een eindtoestand");
-                                        string end = Console.ReadLine();
+                                        if (Char.IsLetter(endTmp[0]) || endTmp == " ") {
+                                            end = endTmp;
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Verkeerde invoer!");
+                                            Console.WriteLine(" ");
+                                            asFileIOError = true;
+                                        }
 
-                                        automaton.addTransition(new Transition(begin, symbol, end));
+                                        automaton.addTransition(new Transition(begin.ToUpper(), symbol, end.ToUpper()));
                                     }
 
-                                    if (asError == false)
+                                    if (asFileIOError == false)
                                     {
-                                        /* Schrijft NDFA, DFA en Reguliere Grammatica naar .txt bestand */
+                                        /* Schrijft DFA naar .txt bestand */
                                         automaton.writeFile("DFA.txt");
                                         Console.WriteLine("DFA is opgeslagen in dfa.txt");
                                         Console.WriteLine(" ");
+
+                                        /* Print NDFA */
+                                        Console.WriteLine("NDFA:");
+                                        automaton.printTransitions();
+                                        Console.WriteLine(" ");
+
+                                        /* Print NDFA -> DFA */
+                                        Console.WriteLine("NDFA->DFA");
+                                        DFA dfaFromUserInput = new DFA(automaton.ndfaToDFA(), symbols);
+                                        dfaFromUserInput.printDFA();
+                                        Console.WriteLine(" ");
                                     }
-                                    asError = false;
+                                    asFileIOError = false;
 
-                                    /* Print NDFA. */
-                                    Console.WriteLine("NDFA:");
-                                    automaton.printTransitions();
-                                    Console.WriteLine(" ");
-
-                                    /* Print NDFA -> DFA */
-                                    Console.WriteLine("NDFA->DFA");
-                                    DFA dfaFromUserInput = new DFA(automaton.ndfaToDFA(), symbols);
-                                    dfaFromUserInput.printDFA();
-                                    Console.WriteLine(" ");
+                                    automaton.clearTransitions();
+                                    automaton.clearMatrix();
                                 }
                                 else
                                 {
-                                    Console.WriteLine("Geef een getal op groter dan 2!");
+                                    Console.WriteLine("Geef een getal op groter dan 0!");
                                     Console.WriteLine(" ");
                                 }
                             }

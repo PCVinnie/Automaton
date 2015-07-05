@@ -56,5 +56,10 @@ namespace Automaton
                 Console.WriteLine(unique[state].ToString() + "->" + txt[state]);
             }
         }
+
+        public void clearTransitions()
+        {
+            transitions.Clear();
+        }
     }
 }
