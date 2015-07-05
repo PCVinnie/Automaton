@@ -281,20 +281,20 @@ namespace Automaton
 
         public void writeFile(string path) 
         {
-            if (!File.Exists(path))
-            {
+            //if (File.Exists(path))
+            //{
                 using (StreamWriter sw = File.CreateText(path))
                 {
                     for (int i = 0; i < matrix.GetLength(0); i++)
                     {
-                        for (int j = 0; j < symbols.Length; j++)
-                        {
-                            string txt = matrix[i, j].ToString();
-                            sw.WriteLine(txt + ",");
-                        }
+                        //for (int j = 0; j < symbols.Length; j++)
+                        //{
+                            if (matrix[i, 0] != null)
+                                sw.WriteLine(">" + matrix[i, 0].ToString() + ",");
+                        //}
                     }
                 }
-            }
+            //}
         }
 
         public void readFile(string path) 

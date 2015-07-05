@@ -11,7 +11,6 @@ namespace Automaton
         string fromState;
         string toState;
         char symbol;
-        public static char EPSILON = '$';
 
         public Transition(string fromState, char symbol, string toState)
         {
