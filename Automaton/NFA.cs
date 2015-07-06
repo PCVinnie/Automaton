@@ -139,9 +139,9 @@ namespace Automaton
 
         public void Show()
         {
-            Console.WriteLine("This NFA has {0} states: 0 - {1}", size, size - 1);
-            Console.WriteLine("The initial state is {0}", initial);
-            Console.WriteLine("The final state is {0}\n", final);
+            Console.WriteLine("Deze NFA heeft {0} toestanden: 0 - {1}", size, size - 1);
+            Console.WriteLine("De begintoestand is: {0}", initial);
+            Console.WriteLine("De eindtoestand is: {0}\n", final);
 
             for (int from = 0; from < size; ++from)
             {
