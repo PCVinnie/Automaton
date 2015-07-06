@@ -3,25 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Automaton
 {
     class Automaton
     {
-        List<Transition> transitions = new List<Transition>();
-        string[,] matrix = new string[30, 6];
-
+        List<Transition> transitions;
+     
         char[] symbols;
+        string[,] matrix;
         string[] beginState;
-        string endState;
         int up = 0;
 
-        public Automaton(char[] symbols, string[] beginState, string endState)
+        public Automaton(char[] symbols, string[] beginState)
         {
             this.symbols = symbols;
             this.beginState = beginState;
-            this.endState = endState;
 
+            matrix = new string[15, symbols.Length+1];
+            transitions = new List<Transition>();
         }
 
         public void addTransition(Transition t)
@@ -29,16 +30,16 @@ namespace Automaton
             transitions.Add(t);
         }
 
-        public void ndfaToDFA()
+        public string[,] ndfaToDFA()
         {
 
             string splitStates1 = "";
             string splitStates2 = "";
+            char[] tmp = { };
             foreach (Transition transition in transitions)
             {
                 for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
                 {
-
                     if (symbols[symbolNr] == transition.getSymbol())
                     {
                         // Voegt de begintoestanden aan de dimensie 0.
@@ -49,13 +50,7 @@ namespace Automaton
                                 matrix[i, 0] = beginState[i];                          
                             }
                         }
-                        // Controleert de begintoestanden en voegt de eindtoestanden toe aan de dimensies a, b enz.
-                        for (int row = 0; row < matrix.GetLength(0); row++)
-                        {
-                            if (matrix[row, 0] == transition.getFromState()) {
-                                matrix[row, symbolNr + 1] += transition.getToState();
-                            }
-                        }
+                        addStateToDimension();
                     }
                 }
             }
@@ -66,34 +61,45 @@ namespace Automaton
             for (int solution = 0; solution < countStates(); solution++)
             {
                 for (int row = beginState.Length; row < matrix.GetLength(0); row++)
-                {
-                    // Maakt een splitsing bij karakters groter dan 2 en slaat dit op in een string array.
-                    if (matrix[row, 0] != null && matrix[row, 0].Length > 1)
+                {            
+                    if (matrix[row, 0] != null)
                     {
-                        splitStates1 = matrix[row, 0];
-
-                        //Controleert de transition voegt de fromstate toe aan de tweedimensionale array.
-                        foreach (Transition transition in transitions)
+                        // Maakt een splitsing bij karakters groter dan 1 en slaat dit op in een string array.
+                        if (matrix[row, 0].Length > 1)
                         {
-                            for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
+                            splitStates1 = matrix[row, 0];
+
+                            //Controleert de transition voegt de fromstate toe aan de tweedimensionale array.
+                            foreach (Transition transition in transitions)
                             {
-                                if (symbols[symbolNr] == transition.getSymbol())
+                                for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
                                 {
-                                    for (int index = 0; index < splitStates1.Length; index++)
+                                    if (symbols[symbolNr] == transition.getSymbol())
                                     {
-                                        if (splitStates1[index].ToString() == transition.getFromState())
+                                        for (int index = 0; index < splitStates1.Length; index++)
                                         {
-                                            matrix[row, symbolNr + 1] += transition.getToState();
+                                            if (splitStates1[index].ToString() == transition.getFromState())
+                                            {
+                                                matrix[row, symbolNr + 1] += transition.getToState();
+                                            }
                                         }
+                                    }
+                                    else
+                                    {
+                                        epsilonClosure();
                                     }
                                 }
                             }
-                        }
 
+                        }
+                        else
+                        {
+                            addStateToDimension();
+                        }
                     }
                 }
 
-                // Filtert de dubbele toestanden eruit.
+                // Filtert de dubbele toestanden eruit en sorteert de letters.
                 for (int row = 0; row < matrix.GetLength(0); row++)
                 {
                     for (int column = 0; column < symbols.Length+1; column++)
@@ -101,29 +107,91 @@ namespace Automaton
                         splitStates2 = matrix[row, column];
                         if (splitStates2 != null)
                         {
-                            matrix[row, column] = String.Join("", splitStates2.Distinct());
+                            tmp = splitStates2.ToCharArray();
+                            Array.Sort(tmp);
+                            matrix[row, column] = String.Join("", tmp.Distinct());
                         }
                     }
                 }
                 addNewState();
             }
             addEmptyString();
+
+            return matrix;
         }
 
-        public void reverse()
+        public void addStateToDimension()
         {
-            // Kijkt naar het omgekeerde van A <- B en voegt hiervoor een toestand toe aan de lijst.
-            /*
-            foreach (Transition transition2 in transitions)
-                if (transition2.getFromState() == transition.getToState() && transition2.getSymbol() == transition.getSymbol())
-                    for (int i = 0; i < matrix.GetLength(0); i++)
-                        if (matrix[i, 0] == transition.getToState())
-                            matrix[i, symbolNr + 1] += transition.getFromState();
-
+            // Controleert de begintoestanden en voegt de eindtoestanden toe aan de dimensies a, b enz.
+            foreach (Transition transition in transitions)
+            {
+                for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
+                {
+                    if (symbols[symbolNr] == transition.getSymbol())
+                    {
+                        for (int row = 0; row < matrix.GetLength(0); row++)
+                        {
+                            if (matrix[row, 0] == transition.getFromState()) 
+                            {
+                                matrix[row, symbolNr + 1] += transition.getToState();
+                            }
+                        }
+                    }
+                }
+            }
         }
-    }
-}
-            */
+
+        public void epsilonClosure()
+        {
+            string splitStates1 = "";
+
+            foreach (Transition transition in transitions) 
+            {
+                if (transition.getSymbol() == '$')
+                {
+                    foreach (Transition transition2 in transitions)
+                    {
+                        if (transition2.getSymbol() != '$')
+                        {
+                            if (transition.getToState() == transition2.getFromState())
+                            {
+                                for (int symbolNr = 0; symbolNr < symbols.Length; symbolNr++)
+                                {
+                                    if (symbols[symbolNr] == transition2.getSymbol())
+                                    {
+                                        for (int row = 0; row < matrix.GetLength(0); row++)
+                                        {
+                                            if (matrix[row, 0] != null)
+                                            {
+                                                // Maakt een splitsing bij karakters groter dan 1 en slaat dit op in een string array.
+                                                if (matrix[row, 0].Length > 1)
+                                                {
+                                                    splitStates1 = matrix[row, 0];
+                                                    for (int index = 0; index < splitStates1.Length; index++)
+                                                    {
+                                                        if (splitStates1[index].ToString() == transition.getFromState())
+                                                        {
+                                                            matrix[row, symbolNr + 1] += transition2.getToState();
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    // Indien het gaat over één enkele toestand.
+                                                    if (matrix[row, 0] == transition.getFromState())
+                                                    {
+                                                        matrix[row, symbolNr + 1] += transition2.getToState();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }            
+                }
+            }
         }
 
         public void addEmptyString()
@@ -180,81 +248,27 @@ namespace Automaton
                 unique = String.Join("", states.Distinct());
             }
 
-            return (int)Math.Pow(Convert.ToDouble(states.Length), Convert.ToDouble(symbols.Length));
+            return (int)Math.Pow(Convert.ToDouble(unique.Length), Convert.ToDouble(symbols.Length));
         }
 
-        public void printDFATable()
-        {
-            string symbol = "";
-            string table = "";
-            string space = "";
-            bool asPrint = true;
-            int totLength = 0;
-            int strLength = 0;
-
-            //Schaalt het tabel in de console.
-            for (int i = 0; i < matrix.GetLength(0); i++) {
-                
-                for (int j = 0; j < symbols.Length; j++) {
-
-                    for (int l = 0; l < matrix.GetLength(0); l++)
-                    {
-                        if (matrix[l, 0].Length > strLength)
-                        {
-                            strLength = matrix[l, 0].Length;
-                        }
-                    }
-
-                    totLength = strLength - matrix[i, j].Length;
-
-                    for (int m = 0; m < totLength; m++)
-                    {
-                        space += " ";
-                    }
-
-                    if (matrix[i, j + 1] == null)
-                    {
-                        table += space + " |  " + matrix[i, j + 1];
-                    }
-                    else
-                    {
-                        table += space + " | " + matrix[i, j + 1];
-                    }
-                    space = "";
-                
-                }
-
-                if (asPrint == true) {
-
-                    totLength = strLength - 1;
-
-                    for (int k = 0; k < totLength; k++)
-                    {
-                        space += " ";
-                    }
-
-                    for (int l = 0; l < symbols.Length; l++)
-                    {
-                        symbol += space + " | " + symbols[l];
-                    }
-
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine(" " + symbol);
-                    Console.ResetColor();
-
-                    symbol = "";
-                    space = "";
-                    asPrint = false;
-
-                }
-                Console.WriteLine(matrix[i, 0] + table);
-                table = "";
-            }
-        }
-
-        List<Transition> getTransitions()
+        public List<Transition> getTransitions()
         {
             return transitions;
+        }
+
+        public void clearTransitions()
+        {
+            transitions.Clear();
+        }
+
+        public void clearMatrix()
+        {
+            Array.Clear(matrix, 0, matrix.Length);
+        }
+
+        public void clearPosition()
+        {
+            up = 0;
         }
 
         public void printTransitions()
@@ -262,6 +276,37 @@ namespace Automaton
             foreach (Transition obj in transitions)
             {
                 Console.WriteLine(obj.print());
+            }
+        }
+
+        public void writeFile(string path) 
+        {
+            //if (File.Exists(path))
+            //{
+                using (StreamWriter sw = File.CreateText(path))
+                {
+                    for (int i = 0; i < matrix.GetLength(0); i++)
+                    {
+                        //for (int j = 0; j < symbols.Length; j++)
+                        //{
+                            if (matrix[i, 0] != null)
+                                sw.WriteLine(">" + matrix[i, 0].ToString() + ",");
+                        //}
+                    }
+                }
+            //}
+        }
+
+        public void readFile(string path) 
+        {
+            using (StreamReader sr = File.OpenText(path)) {
+                string s = "";
+                while ((s = sr.ReadLine()) != null)
+                {
+
+                        Console.WriteLine(s);
+
+                }
             }
         }
     }

@@ -8,5 +8,6 @@ namespace Automaton
 {
     class NDFA : Representation
     {
+
     }
 }
