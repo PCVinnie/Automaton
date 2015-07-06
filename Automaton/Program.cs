@@ -61,6 +61,10 @@ namespace Automaton
                             automaton.printTransitions();
                             Console.WriteLine(" ");
 
+                            //NDFA ndfa = new NDFA(automaton.getTransitions(), symbols);
+                            //ndfa.printNDFA();
+                            //Console.WriteLine(" ");
+
                             /* Print NDFA -> DFA */
                             Console.WriteLine("NDFA->DFA");
                             DFA dfa = new DFA(automaton.ndfaToDFA(),symbols);

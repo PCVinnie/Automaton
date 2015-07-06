@@ -285,13 +285,22 @@ namespace Automaton
             //{
                 using (StreamWriter sw = File.CreateText(path))
                 {
+                    string txt = "";
+                    for (int symbol = 0; symbol < symbols.Length; symbol++) {
+                        txt += " | " + symbols[symbol];
+                    }
+                    sw.WriteLine(txt);
+
+                    string columns = "";
+
                     for (int i = 0; i < matrix.GetLength(0); i++)
                     {
-                        //for (int j = 0; j < symbols.Length; j++)
-                        //{
-                            if (matrix[i, 0] != null)
-                                sw.WriteLine(">" + matrix[i, 0].ToString() + ",");
-                        //}
+                        for (int j = 0; j < symbols.Length; j++)
+                        {
+                            columns += " | " + matrix[i, j+1];
+                        }
+                        sw.WriteLine(">" + matrix[i, 0] + " | " + columns);
+                        columns = "";
                     }
                 }
             //}
