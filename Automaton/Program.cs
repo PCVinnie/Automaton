@@ -61,10 +61,6 @@ namespace Automaton
                             automaton.printTransitions();
                             Console.WriteLine(" ");
 
-                            //NDFA ndfa = new NDFA(automaton.getTransitions(), symbols);
-                            //ndfa.printNDFA();
-                            //Console.WriteLine(" ");
-
                             /* Print NDFA -> DFA */
                             Console.WriteLine("NDFA->DFA");
                             DFA dfa = new DFA(automaton.ndfaToDFA(),symbols);
@@ -93,6 +89,8 @@ namespace Automaton
                             automaton.addTransition(new Transition("D", 'b', "C"));
                             automaton.addTransition(new Transition("D", 'a', "E"));
                             automaton.addTransition(new Transition("D", 'b', "E"));
+                            automaton.addTransition(new Transition("E", 'a', "A"));
+                            automaton.addTransition(new Transition("D", '$', "E"));
 
                             /* Print NDFA */
                             Console.WriteLine("NDFA:");
@@ -112,7 +110,7 @@ namespace Automaton
                             char symbolTmp  = ' ';
                             int number = 0;
                             bool asBeginState = true;
-                            bool asFileIOError = false;
+                            bool asPrintError = false;
                             bool asSymbolError = true;
                             string begin = "";
                             string end = "";
@@ -154,7 +152,7 @@ namespace Automaton
                                         {
                                             for (int i = 0; i < symbols.Length; i++)
                                             {
-                                                if (symbolTmp == symbols[i])
+                                                if (symbolTmp == symbols[i] || symbolTmp == '$')
                                                 {
                                                     symbol = symbolTmp;
                                                     asSymbolError = false;
@@ -163,7 +161,7 @@ namespace Automaton
 
                                             if (asSymbolError == true)
                                             {
-                                                asFileIOError = true;
+                                                asPrintError = true;
                                                 Console.WriteLine("Verkeerde invoer!");
                                                 Console.WriteLine(" ");
                                                 break;
@@ -174,7 +172,7 @@ namespace Automaton
                                         {
                                             Console.WriteLine("Verkeerde invoer!");
                                             Console.WriteLine(" ");
-                                            asFileIOError = true;
+                                            asPrintError = true;
                                             break;
                                         }
                                         Console.WriteLine("Geef een eindtoestand: A, B, C enz.");
@@ -191,19 +189,14 @@ namespace Automaton
                                         {
                                             Console.WriteLine("Verkeerde invoer!");
                                             Console.WriteLine(" ");
-                                            asFileIOError = true;
+                                            asPrintError = true;
                                         }
 
                                         automaton.addTransition(new Transition(begin.ToUpper(), symbol, end.ToUpper()));
                                     }
 
-                                    if (asFileIOError == false)
+                                    if (asPrintError == false)
                                     {
-                                        /* Schrijft DFA naar .txt bestand */
-                                        automaton.writeFile("dfa.txt");
-                                        Console.WriteLine("DFA is opgeslagen in dfa.txt");
-                                        Console.WriteLine(" ");
-
                                         /* Print NDFA */
                                         Console.WriteLine("NDFA:");
                                         automaton.printTransitions();
@@ -215,7 +208,7 @@ namespace Automaton
                                         dfaFromUserInput.printDFA();
                                         Console.WriteLine(" ");
                                     }
-                                    asFileIOError = false;
+                                    asPrintError = false;
 
                                     automaton.clearTransitions();
                                     automaton.clearMatrix();
@@ -234,14 +227,13 @@ namespace Automaton
                             }
                             break;
                         case 4:
-                            Console.WriteLine("Voer een Reguliere Expressie in. Symbolen: ( ) a b | *");
-                            string input = Console.ReadLine();
-                            RegExp r;
-                            if (RegExp.CheckRegExpInput(input))
-                            {
-                                r = new RegExp(input);
-                            }
-                            Console.WriteLine("Input error!");
+                            Console.WriteLine("Enter a regular expression:");
+                            string pattern = Console.ReadLine();
+                            RegexParser parser;
+                            if (RegexParser.CheckRegExpPattern(pattern))
+                                parser = new RegexParser(pattern);
+                            else
+                                Console.WriteLine("Forbidden character(s) detected!");
                             break;
                         default:
                             Console.WriteLine("Kies een getal van 1 t/m 4.");

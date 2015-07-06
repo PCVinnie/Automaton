@@ -117,6 +117,9 @@ namespace Automaton
             }
             addEmptyString();
 
+            /* Schrijft DFA naar .txt bestand */
+            writeFile("dfa.txt");
+
             return matrix;
         }
 
@@ -281,29 +284,28 @@ namespace Automaton
 
         public void writeFile(string path) 
         {
-            //if (File.Exists(path))
-            //{
-                using (StreamWriter sw = File.CreateText(path))
-                {
-                    string txt = "";
-                    for (int symbol = 0; symbol < symbols.Length; symbol++) {
-                        txt += " | " + symbols[symbol];
-                    }
-                    sw.WriteLine(txt);
-
-                    string columns = "";
-
-                    for (int i = 0; i < matrix.GetLength(0); i++)
-                    {
-                        for (int j = 0; j < symbols.Length; j++)
-                        {
-                            columns += " | " + matrix[i, j+1];
-                        }
-                        sw.WriteLine(">" + matrix[i, 0] + " | " + columns);
-                        columns = "";
-                    }
+            using (StreamWriter sw = File.CreateText(path))
+            {
+                string txt = "";
+                for (int symbol = 0; symbol < symbols.Length; symbol++) {
+                    txt += "   " + symbols[symbol];
                 }
-            //}
+                sw.WriteLine(txt);
+
+                string columns = "";
+                for (int i = 0; i < matrix.GetLength(0); i++)
+                {
+                    for (int j = 0; j < symbols.Length; j++)
+                    {
+                        columns += " " + matrix[i, j+1];
+                    }
+                        sw.WriteLine(matrix[i, 0] + " " + columns);
+                        columns = "";
+                }
+
+                Console.WriteLine("DFA is opgeslagen in " + path);
+                Console.WriteLine(" ");
+             }
         }
 
         public void readFile(string path) 
