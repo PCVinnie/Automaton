@@ -10,8 +10,8 @@ namespace Automaton
     {   
         static void Main(string[] args)
         {
-            char[] symbols = { 'a', 'b' };
-            string[] beginState = { "A", "B" };
+            char[] symbols = { 'a', 'b', 'c' };
+            string[] beginState = { "A", "B", "C" };
             string endState = "F";
 
             Automaton automaton = new Automaton(symbols, beginState, endState);
@@ -85,14 +85,13 @@ namespace Automaton
                         case 3:
                             break;
                         case 4:
-                            Console.WriteLine("Voer een Reguliere Expressie in. Symbolen: ( ) a b | *");
-                            string input = Console.ReadLine();
-                            RegExp r;
-                            if (RegExp.CheckRegExpInput(input))
-                            {
-                                r = new RegExp(input);
-                            }
-                            Console.WriteLine("Input error!");
+                            Console.WriteLine("Enter a regular expression:");
+                            string pattern = Console.ReadLine();
+                            RegexParser parser;
+                            if (RegexParser.CheckRegExpPattern(pattern))
+                                parser = new RegexParser(pattern);
+                            else
+                                Console.WriteLine("Forbidden character(s) detected!");
                             break;
                         default:
                             Console.WriteLine("Kies een getal van 1 t/m 4.");
