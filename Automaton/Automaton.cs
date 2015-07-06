@@ -118,7 +118,7 @@ namespace Automaton
             addEmptyString();
 
             /* Schrijft DFA naar .txt bestand */
-            writeFile("dfa.txt");
+            writeFileDFA("dfa.txt");
 
             return matrix;
         }
@@ -282,7 +282,7 @@ namespace Automaton
             }
         }
 
-        public void writeFile(string path) 
+        public void writeFileDFA(string path) 
         {
             using (StreamWriter sw = File.CreateText(path))
             {
