@@ -49,7 +49,6 @@ namespace Automaton
 
             Console.WriteLine(" ");
             writeFileRegGra("regGra.txt", outputFileIO);
-            Console.WriteLine(" ");
         }
 
         public void writeFileRegGra(string path, string[] outputFileIO)

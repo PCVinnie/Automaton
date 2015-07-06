@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Automaton
 {
@@ -88,11 +89,36 @@ namespace Automaton
                 Console.WriteLine(matrix[i, 0] + table);
                 table = "";
             }
+
+            Console.WriteLine(" ");
+            writeFileDFA("dfa.txt");
+        
         }
-    
-    
-    
-    
-    
+
+        public void writeFileDFA(string path)
+        {
+            using (StreamWriter sw = File.CreateText(path))
+            {
+                string txt = "";
+                for (int symbol = 0; symbol < symbols.Length; symbol++)
+                {
+                    txt += "   " + symbols[symbol];
+                }
+                sw.WriteLine(txt);
+
+                string columns = "";
+                for (int i = 0; i < matrix.GetLength(0); i++)
+                {
+                    for (int j = 0; j < symbols.Length; j++)
+                    {
+                        columns += " " + matrix[i, j + 1];
+                    }
+                    sw.WriteLine(matrix[i, 0] + " " + columns);
+                    columns = "";
+                }
+
+                Console.WriteLine("DFA is opgeslagen in " + path);
+            }
+        }
     }
 }

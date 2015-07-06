@@ -118,7 +118,7 @@ namespace Automaton
             addEmptyString();
 
             /* Schrijft DFA naar .txt bestand */
-            writeFileDFA("dfa.txt");
+            //writeFileDFA("dfa.txt");
 
             return matrix;
         }
@@ -279,45 +279,6 @@ namespace Automaton
             foreach (Transition obj in transitions)
             {
                 Console.WriteLine(obj.print());
-            }
-        }
-
-        public void writeFileDFA(string path) 
-        {
-            using (StreamWriter sw = File.CreateText(path))
-            {
-                string txt = "";
-                for (int symbol = 0; symbol < symbols.Length; symbol++) {
-                    txt += "   " + symbols[symbol];
-                }
-                sw.WriteLine(txt);
-
-                string columns = "";
-                for (int i = 0; i < matrix.GetLength(0); i++)
-                {
-                    for (int j = 0; j < symbols.Length; j++)
-                    {
-                        columns += " " + matrix[i, j+1];
-                    }
-                        sw.WriteLine(matrix[i, 0] + " " + columns);
-                        columns = "";
-                }
-
-                Console.WriteLine("DFA is opgeslagen in " + path);
-                Console.WriteLine(" ");
-             }
-        }
-
-        public void readFile(string path) 
-        {
-            using (StreamReader sr = File.OpenText(path)) {
-                string s = "";
-                while ((s = sr.ReadLine()) != null)
-                {
-
-                        Console.WriteLine(s);
-
-                }
             }
         }
     }
