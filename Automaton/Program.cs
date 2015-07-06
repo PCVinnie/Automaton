@@ -114,7 +114,13 @@ namespace Automaton
                             bool asSymbolError = true;
                             string begin = "";
                             string end = "";
-                            Console.WriteLine("Geef de aantal toestanden op");
+
+
+                            Console.WriteLine("Geef de aantal overgangen op (Bijvoorbeeld: 1, 2, 3 enz.)");
+                            Console.ForegroundColor = ConsoleColor.DarkYellow;
+                            Console.WriteLine("Ter info: (Begintoestand -> Symbool -> Eindtoestand) is één overgang!");
+                            Console.ResetColor();
+                            
                             if (int.TryParse(Console.ReadLine(), out number))
                             {
                                 if (number > 0)
@@ -129,7 +135,7 @@ namespace Automaton
                                         }
                                         else
                                         {
-                                            Console.WriteLine("Geef een begintoestand: A, B, C enz.");
+                                            Console.WriteLine("Geef een begintoestand: A, B, C enz:");
                                             string beginTmp = Console.ReadLine();
                                             if (string.IsNullOrEmpty(beginTmp))
                                             {
@@ -147,7 +153,7 @@ namespace Automaton
                                             }
                                         }
 
-                                        Console.WriteLine("Geef een symbool, kies: a, b of $");
+                                        Console.WriteLine("Geef een symbool, kies: a, b of $:");
                                         if (char.TryParse(Console.ReadLine(), out symbolTmp))
                                         {
                                             for (int i = 0; i < symbols.Length; i++)
@@ -175,7 +181,7 @@ namespace Automaton
                                             asPrintError = true;
                                             break;
                                         }
-                                        Console.WriteLine("Geef een eindtoestand: A, B, C enz.");
+                                        Console.WriteLine("Geef een eindtoestand: A, B, C enz.:");
                                         string endTmp = Console.ReadLine();
                                         if (string.IsNullOrEmpty(endTmp))
                                         {
@@ -227,13 +233,13 @@ namespace Automaton
                             }
                             break;
                         case 4:
-                            Console.WriteLine("Enter a regular expression:");
+                            Console.WriteLine("Voer een reguliere expressie in:");
                             string pattern = Console.ReadLine();
                             RegexParser parser;
                             if (RegexParser.CheckRegExpPattern(pattern))
                                 parser = new RegexParser(pattern);
                             else
-                                Console.WriteLine("Forbidden character(s) detected!");
+                                Console.WriteLine("Verkeerd ingevoerde karakter(s)!");
                             break;
                         default:
                             Console.WriteLine("Kies een getal van 1 t/m 4.");
