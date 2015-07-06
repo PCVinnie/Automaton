@@ -12,8 +12,6 @@ namespace Automaton
         {
             char[] symbols = { 'a', 'b' };
             string[] beginState = { "A" };
-            char[] symbols = { 'a', 'b', 'c' };
-            string[] beginState = { "A", "B", "C" };
             string endState = "F";
 
             Automaton automaton = new Automaton(symbols, beginState);
